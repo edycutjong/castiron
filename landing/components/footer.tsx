@@ -7,6 +7,7 @@ const COLUMNS: { title: string; links: { label: string; href: string; external?:
     title: "Product",
     links: [
       { label: "Live console (/console)", href: LINKS.console, external: true },
+      { label: "Demo video (2 min)", href: LINKS.video, external: true },
       { label: "API — api.castiron.edycu.dev", href: LINKS.api, external: true },
       { label: "Product home — castiron.edycu.dev", href: LINKS.product, external: true },
       { label: "Pitch deck", href: LINKS.pitch, external: true },

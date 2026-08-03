@@ -9,6 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 export const LINKS = {
   product: "https://castiron.edycu.dev",
   console: "https://api.castiron.edycu.dev/console",
+  video: "https://youtu.be/-l133pcaa24",
   api: "https://api.castiron.edycu.dev",
   repo: "https://github.com/edycutjong/castiron",
   demoDoc: "https://github.com/edycutjong/castiron/blob/main/DEMO.md",
