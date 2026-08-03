@@ -221,6 +221,16 @@ tests/       175 tests (100% line coverage on castiron/)
 docs/        evidence packs · friction log · dossier issues · assets
 ```
 
+## 🙏 Acknowledgments
+
+Built for the **[Backblaze Generative Media Hackathon](https://backblaze-generative-media.devpost.com)** on **[Genblaze](https://pypi.org/project/genblaze/) + [Backblaze B2](https://www.backblaze.com/cloud-storage)**. Thanks to the sponsors — Backblaze for B2 (S3 storage, Event Notifications, Object Lock) and GMI Cloud for FLUX image inference:
+
+<p align="center">
+  <a href="https://www.backblaze.com/cloud-storage"><img src="docs/sponsors/backblaze.png" height="46" alt="Backblaze" /></a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://www.gmicloud.ai"><img src="docs/sponsors/gmi.png" height="46" alt="GMI Cloud" /></a>
+</p>
+
 ## 📄 License
 
 [MIT](LICENSE) © 2026 Edy Cu

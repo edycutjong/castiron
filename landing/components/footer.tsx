@@ -108,6 +108,21 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Sponsors */}
+        <div className="mt-14 flex flex-col items-center gap-5 border-t border-iron-strong pt-10">
+          <span className="runbook-label">Sponsored by</span>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <a href={LINKS.backblaze} target="_blank" rel="noopener noreferrer" aria-label="Backblaze" className="rounded-lg bg-white px-5 py-3 transition-transform duration-200 hover:-translate-y-0.5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="sponsors/backblaze.png" alt="Backblaze" className="h-7 w-auto" />
+            </a>
+            <a href="https://www.gmicloud.ai" target="_blank" rel="noopener noreferrer" aria-label="GMI Cloud" className="rounded-lg bg-white px-5 py-3 transition-transform duration-200 hover:-translate-y-0.5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="sponsors/gmi.png" alt="GMI Cloud" className="h-7 w-auto" />
+            </a>
+          </div>
+        </div>
+
         <Separator className="my-10" />
 
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
