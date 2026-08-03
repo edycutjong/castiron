@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 from castiron.backends import LocalDirBackend
 from castiron.config import settings
