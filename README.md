@@ -9,7 +9,7 @@
   [![Landing](https://img.shields.io/badge/🚀_Landing-Live-06b6d4?style=for-the-badge)](https://castiron.edycu.dev)
   [![Pitch Deck](https://img.shields.io/badge/📊_Pitch-Deck-f59e0b?style=for-the-badge)](https://castiron.edycu.dev/pitch.html)
   [![API](https://img.shields.io/badge/🔌_API-Live-10b981?style=for-the-badge)](https://api.castiron.edycu.dev/docs)
-  [![Pitch Video](https://img.shields.io/badge/🎬_Pitch-Video-ef4444?style=for-the-badge)](https://youtu.be/your-video)
+  [![Pitch Video](https://img.shields.io/badge/🎬_Pitch-Video-ef4444?style=for-the-badge)](https://youtu.be/-l133pcaa24)
   [![Built for Hackathon](https://img.shields.io/badge/Devpost-Backblaze_Generative_Media-8b5cf6?style=for-the-badge)](https://backblaze-generative-media.devpost.com)
 
   <br/>
