@@ -1,0 +1,208 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-progress runs for the same PR/branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  OFFLINE: "1" # CI never uses credentials; the offline path must stay green.
+
+jobs:
+  # ── STAGE 1: Code Quality (parallel with Stage 2) ──────────────────────────
+  quality:
+    name: "Stage 1 · Quality"
+    runs-on: ubuntu-latest
+    # 3.11 is the hard gate (the pinned, proven interpreter). 3.12 runs as a
+    # forward-compat signal but is advisory — it never reds the pipeline.
+    continue-on-error: ${{ matrix.python-version != '3.11' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Full matrix on main push, single interpreter on PRs (saves runner time).
+        python-version: ${{ github.event_name == 'push' && fromJSON('["3.11","3.12"]') || fromJSON('["3.11"]') }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install ffmpeg (audio fixtures + mixing)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Sync dependencies
+        run: uv sync --extra dev
+
+      - name: Ruff (lint)
+        run: uv run ruff check .
+
+      - name: Pytest with coverage
+        run: uv run pytest --cov=castiron --cov=app --cov-report=term --cov-report=xml
+
+      - name: Upload coverage report
+        if: matrix.python-version == '3.11'
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: coverage.xml
+          retention-days: 7
+          if-no-files-found: ignore
+
+  # ── STAGE 2: Security Gate (parallel with Stage 1) ─────────────────────────
+  secret-scan:
+    name: "Stage 2 · Secret Scanning"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # Full history for scanning git commits
+      - name: TruffleHog Secret Scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --only-verified
+
+  dependency-audit:
+    name: "Stage 2 · Dependency Audit"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: pip-audit (advisory)
+        run: |
+          uv sync --extra dev
+          uv run --with pip-audit pip-audit || true
+        continue-on-error: true # Advisory — don't block on unpatched upstream.
+
+  # ── STAGE 3: Build Verification ────────────────────────────────────────────
+  build:
+    name: "Stage 3 · Build Verification"
+    needs: [quality]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Build wheel + sdist (hatchling)
+        run: uv build
+      - name: Confirm artifacts
+        run: ls -la dist/
+
+  # ── STAGE 4: End-to-End ────────────────────────────────────────────────────
+  e2e:
+    name: "Stage 4 · End-to-End"
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - name: Sync dependencies
+        run: uv sync --extra dev
+      - name: API smoke — boot uvicorn + probe /healthz
+        run: |
+          uv run uvicorn app.main:app --port 8000 &
+          SERVER_PID=$!
+          for i in $(seq 1 20); do
+            curl -fsS http://127.0.0.1:8000/healthz && break || sleep 1
+          done
+          curl -fsS http://127.0.0.1:8000/healthz
+          kill $SERVER_PID
+      - name: Offline end-to-end (happy · chaos-failover · tamper · fan-out)
+        run: uv run python scripts/verify_offline.py
+
+  # ── STAGE 5: Performance (advisory) ────────────────────────────────────────
+  performance:
+    name: "Stage 5 · Performance"
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - name: Sync dependencies
+        run: uv sync --extra dev
+      - name: Benchmark (p50/p95 · 0 dropped episodes)
+        run: uv run python bench.py
+        continue-on-error: true # Advisory — orchestration latency varies by runner.
+
+  # ── STAGE 6: Semantic Release (main only) ──────────────────────────────────
+  # Bumps the version from Conventional Commits, tags vX.Y.Z, writes the
+  # changelog, and cuts a GitHub Release. Runs only when every gate is green.
+  release:
+    name: "Stage 6 · Semantic Release"
+    needs: [quality, secret-scan, build, e2e]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write # push the release commit + tag, create the GitHub Release
+    concurrency:
+      group: release-${{ github.ref }}
+      cancel-in-progress: false
+    outputs:
+      released: ${{ steps.release.outputs.released }}
+      version: ${{ steps.release.outputs.version }}
+      tag: ${{ steps.release.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history so the commit parser sees every commit
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Python Semantic Release
+        id: release
+        uses: python-semantic-release/python-semantic-release@v9
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── STAGE 7: Deploy to Railway (main only) ─────────────────────────────────
+  # Deploys the (possibly newly-versioned) code to the linked Railway service.
+  # Runs on every green main push; the version bump above is included when the
+  # commits warranted one. Requires the RAILWAY_TOKEN repo secret.
+  deploy:
+    name: "Stage 7 · Deploy to Railway"
+    needs: [release]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://api.castiron.edycu.dev
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main # pick up the release commit if one was just pushed
+          fetch-depth: 1
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          echo "Deploying ${{ needs.release.outputs.tag || 'current main' }} to Railway…"
+          railway up --ci --service castiron --environment production
+      - name: Deployment summary
+        run: |
+          echo "🚀 Deployed to https://api.castiron.edycu.dev"
+          echo "  version: ${{ needs.release.outputs.version || 'unchanged' }}"
+          echo "  released: ${{ needs.release.outputs.released || 'false' }}"

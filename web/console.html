@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CastIron — Producer Console</title>
+<style>
+  :root {
+    --bg:#0b0c0e; --panel:#141619; --line:#23272d; --ink:#e8eaed; --dim:#8b929c;
+    --iron:#d98a3d; --ok:#3ecf8e; --run:#e0b23d; --fail:#ef5f5f; --pending:#3a3f47;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font:14px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  header { padding:22px 28px; border-bottom:1px solid var(--line);
+    display:flex; align-items:baseline; gap:14px; }
+  h1 { font-size:18px; margin:0; letter-spacing:.02em; }
+  h1 b { color:var(--iron); }
+  .tag { color:var(--dim); font-size:12px; }
+  main { max-width:920px; margin:0 auto; padding:26px 28px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:18px 20px; margin-bottom:20px; }
+  label { display:block; color:var(--dim); font-size:12px; margin:10px 0 4px; }
+  input,select,button { font:inherit; }
+  input,select { width:100%; background:#0e1013; color:var(--ink);
+    border:1px solid var(--line); border-radius:7px; padding:9px 11px; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  button { margin-top:16px; background:var(--iron); color:#111; border:0;
+    border-radius:7px; padding:11px 18px; font-weight:600; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  .rail { display:flex; flex-direction:column; gap:12px; }
+  .stage { display:flex; align-items:center; gap:14px; padding:14px 16px;
+    border:1px solid var(--line); border-radius:9px; background:#0e1013;
+    transition:border-color .2s, background .2s; }
+  .stage .dot { width:12px; height:12px; border-radius:50%; background:var(--pending);
+    flex:0 0 auto; box-shadow:0 0 0 0 rgba(0,0,0,0); }
+  .stage.running .dot { background:var(--run); animation:pulse 1s infinite; }
+  .stage.succeeded .dot { background:var(--ok); }
+  .stage.failed .dot { background:var(--fail); }
+  .stage.running { border-color:var(--run); }
+  .stage.succeeded { border-color:#255c44; }
+  .stage.failed { border-color:#6b2b2b; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(224,178,61,.5)} 70%{box-shadow:0 0 0 8px rgba(224,178,61,0)} 100%{box-shadow:0 0 0 0 rgba(224,178,61,0)} }
+  .stage .name { width:100px; font-weight:600; text-transform:capitalize; }
+  .stage .meta { color:var(--dim); font-size:12px; flex:1; }
+  .stage .meta b { color:var(--ink); font-weight:600; }
+  .badge { font-size:11px; padding:2px 8px; border-radius:20px; border:1px solid var(--line); color:var(--dim); }
+  .badge.fell { color:var(--iron); border-color:var(--iron); }
+  #summary { color:var(--dim); font-size:12.5px; min-height:20px; margin-top:6px; }
+  #summary .hash { color:var(--ok); }
+  #log { margin-top:16px; max-height:210px; overflow:auto; border-top:1px solid var(--line);
+    padding-top:12px; color:var(--dim); font-size:12px; }
+  #log div { white-space:pre; }
+  #log .fb { color:var(--iron); }
+  #log .er { color:var(--fail); }
+</style>
+</head>
+<body>
+<header>
+  <h1><b>CastIron</b> Producer Console</h1>
+  <span class="tag">script &rarr; published episode, even when your TTS provider dies</span>
+</header>
+<main>
+  <div class="card">
+    <div class="row">
+      <div>
+        <label>Script</label>
+        <input id="script" value="Welcome to CastIron — the episode that survives an outage." />
+      </div>
+      <div>
+        <label>Music style</label>
+        <input id="music" value="ambient" />
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Voice</label>
+        <input id="voice" value="narrator" />
+      </div>
+      <div>
+        <label>Chaos (knock out a rung)</label>
+        <select id="chaos">
+          <option value="">none — happy path</option>
+          <option value="tts">tts — ElevenLabs down &rarr; ladder falls to LMNT</option>
+          <option value="lmnt">lmnt — down to Hume (rung 3)</option>
+          <option value="narration">narration — all rungs down (DEGRADED)</option>
+          <option value="music">music provider down</option>
+          <option value="cover">cover provider down</option>
+        </select>
+      </div>
+    </div>
+    <button id="go">Produce episode</button>
+  </div>
+
+  <div class="card">
+    <div class="rail" id="rail">
+      <div class="stage" data-stage="narration"><span class="dot"></span>
+        <span class="name">narration</span><span class="meta">TTS ladder: ElevenLabs &rarr; LMNT &rarr; Hume</span>
+        <span class="badge" data-badge></span></div>
+      <div class="stage" data-stage="music"><span class="dot"></span>
+        <span class="name">music</span><span class="meta">Stability audio bed</span>
+        <span class="badge" data-badge></span></div>
+      <div class="stage" data-stage="cover"><span class="dot"></span>
+        <span class="name">cover</span><span class="meta">GMI FLUX cover art</span>
+        <span class="badge" data-badge></span></div>
+    </div>
+    <div id="summary"></div>
+    <div id="log"></div>
+  </div>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const stageEl = name => document.querySelector(`.stage[data-stage="${name}"]`);
+let es = null;
+
+function resetRail() {
+  document.querySelectorAll('.stage').forEach(s => {
+    s.className = 'stage';
+    s.querySelector('[data-badge]').textContent = '';
+    s.querySelector('[data-badge]').className = 'badge';
+  });
+  $('#summary').textContent = '';
+  $('#log').innerHTML = '';
+}
+function logLine(text, cls) {
+  const d = document.createElement('div');
+  if (cls) d.className = cls;
+  d.textContent = text;
+  $('#log').appendChild(d);
+  $('#log').scrollTop = $('#log').scrollHeight;
+}
+function setStage(name, state, meta) {
+  const el = stageEl(name); if (!el) return;
+  el.className = 'stage ' + state;
+  if (meta) el.querySelector('.meta').innerHTML = meta;
+}
+
+async function produce() {
+  resetRail();
+  $('#go').disabled = true;
+  const body = {
+    script: $('#script').value, voice: $('#voice').value,
+    music_style: $('#music').value, chaos: $('#chaos').value || null,
+  };
+  const res = await fetch('/runs', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body),
+  });
+  const { run_id } = await res.json();
+  logLine('run ' + run_id + ' queued');
+  if (es) es.close();
+  es = new EventSource(`/runs/${run_id}/events`);
+
+  const on = (t, fn) => es.addEventListener(t, e => fn(JSON.parse(e.data)));
+  on('pipeline.started', d => logLine(`pipeline.started · ${d.total_steps||3} stages fan out (arun mc=3)`));
+  on('step.started', d => { if (d.stage) setStage(d.stage, 'running',
+      `<b>${d.provider}</b> · ${d.model}`); logLine(`step.started  ${d.stage||''} ${d.provider}/${d.model}`); });
+  on('ladder.fallback', d => {
+    logLine(`ladder.fallback · rung ${d.from_rung} (${d.provider}) failed → stepping down`, 'fb');
+    const b = stageEl('narration').querySelector('[data-badge]');
+    b.textContent = 'fell back'; b.className = 'badge fell';
+  });
+  on('step.completed', d => {
+    if (!d.stage) return;
+    let meta = `<b>${d.rung||d.provider}</b> · ${d.model}`;
+    if (d.fell_back) meta += ` <span class="badge fell">rung ${d.rung_index}</span>`;
+    setStage(d.stage, 'succeeded', meta);
+    logLine(`step.completed ${d.stage} → ${d.rung||d.provider}/${d.model}` + (d.fell_back?' (fallback)':''));
+  });
+  on('step.failed', d => { if (d.stage) setStage(d.stage, 'failed',
+      `<span style="color:var(--fail)">${(d.error||'failed').slice(0,60)}</span>`);
+      logLine(`step.failed ${d.stage||''} ${d.error||''}`, 'er'); });
+  on('pipeline.completed', d => {
+    $('#summary').innerHTML = `episode published · manifest <span class="hash">${(d.manifest_hash||'').slice(0,16)}…</span>`;
+    logLine('pipeline.completed');
+  });
+  on('pipeline.failed', d => logLine('pipeline.failed ' + (d.message||d.error||''), 'er'));
+  on('done', d => {
+    logLine('done · state=' + d.state);
+    if (d.state === 'failed' && !$('#summary').textContent)
+      $('#summary').innerHTML = '<span style="color:var(--fail)">run DEGRADED — no rung shipped</span>';
+    es.close(); $('#go').disabled = false;
+  });
+  es.onerror = () => { logLine('sse connection closed', 'er'); es.close(); $('#go').disabled = false; };
+}
+$('#go').addEventListener('click', produce);
+</script>
+</body>
+</html>

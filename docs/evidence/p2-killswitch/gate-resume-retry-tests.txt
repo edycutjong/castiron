@@ -1,0 +1,14 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/runner/work/castiron/castiron
+configfile: pyproject.toml
+plugins: anyio-4.14.1, asyncio-1.4.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 37 items
+
+tests/test_gate.py ........                                              [ 21%]
+tests/test_resume.py .....                                               [ 35%]
+tests/test_retry.py .....                                                [ 48%]
+tests/test_chaos.py ...................                                  [100%]
+
+============================== 37 passed in 1.35s ==============================

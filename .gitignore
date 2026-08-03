@@ -1,0 +1,40 @@
+# secrets & env
+.env
+.env.*
+!.env.example
+*.pem
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+cache/
+# node
+node_modules/
+.next/
+# os/editor
+.DS_Store
+# local artifacts
+*.log
+qa-*.png
+# runtime state (SQLite run store + local object store)
+var/
+*.db
+*.db-wal
+*.db-shm
+# coverage
+.coverage
+coverage.xml
+htmlcov/
+# build artifacts (uv build → wheel + sdist)
+dist/
+*.egg-info/
+
+# asset-generation working dir (HTML generators, node cruft) — outputs live in docs/
+docs/assets/
+
+# landing page (Next.js static export for GitHub Pages)
+landing/node_modules/
+landing/out/
+landing/.next/

@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    ignore:
+      # genblaze is the sponsor SDK, deliberately pinned to ==0.4.1 (spec-frozen;
+      # a healthz SDKCHK guard asserts the exact version). Do not auto-bump.
+      - dependency-name: "genblaze"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10

@@ -1,0 +1,27 @@
+CastIron OFFLINE verification  (mode=OFFLINE, network=none)
+
+1) HAPPY PATH (3-stage fan-out)
+  [PASS] run completed + manifest verifies  — hash=997a075c6567fd92
+  [PASS] episode has in-file manifest (inline embed)  — method=inline
+  [PASS] episode file verifies (genblaze-verify equivalent)
+  [PASS] all 3 stages succeeded  — narration=elevenlabs · music=stability-audio · cover=gmi-flux
+  [PASS] cost summed across stages  — $0.0090
+  [PASS] no fallback needed on happy path  — narration=elevenlabs-multilingual-v2
+
+2) CHAOS FAILOVER (primary TTS rung down → cross-provider ladder)
+  [PASS] ladder fell back to rung 2  — requested=elevenlabs-multilingual-v2 used=lmnt-blizzard
+  [PASS] manifest records the ACTUAL rung (I3)  — provider=lmnt rung=1
+  [PASS] episode still produced + verifies
+  [PASS] music + cover unaffected by narration chaos
+
+3) MANIFEST TAMPER RED-PATH
+  [PASS] tampered manifest fails verify_hash()
+  [PASS] tampered file fails verify_file()
+
+4) PARALLEL FAN-OUT + EVENT LOG (SSE relay source, persisted)
+  [PASS] stage order narration→music→cover
+  [PASS] 3 assets + manifest landed on the sink  — 4 objects
+  [PASS] event log ordered + persisted (runs/stages/events)  — 14 events · run.state=completed
+  [PASS] stage rows carry provider/model/sha256
+
+ALL GREEN — 0 dropped episodes

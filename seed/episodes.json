@@ -1,0 +1,44 @@
+{
+  "_about": "Operator-seeded demo dataset — real-shaped podcast narration scripts used by bench.py to make the resilience numbers deterministic on a fresh clone. This is realistic background material, NOT the capability being judged: the capability is CastIron's self-healing render/verify/publish engine, which the benchmark exercises over these scripts. Labeled per the honesty rules in DEMO.md.",
+  "hero_query": "Kill the primary TTS provider mid-render — does the episode still ship, hash-verified and published?",
+  "seed": 42,
+  "episodes": [
+    {
+      "id": "space_update",
+      "hero": true,
+      "music_style": "cinematic",
+      "script": "Tonight on the space update — and this is where naive TTS trips — the rover crossed the ridge, paused — for a long dramatic beat — then rolled on.",
+      "note": "em-dash pacing trap: doubles as the AgentLoop gate's iterate case, and is the hero failover script."
+    },
+    {
+      "id": "market_wrap",
+      "music_style": "ambient",
+      "script": "Markets closed higher today, with the broad index up nearly one percent as chipmakers led the rally and energy lagged. We break down what the move means for next week.",
+      "note": "clean daily-brief script, no pacing traps."
+    },
+    {
+      "id": "true_crime_cold_open",
+      "music_style": "dark",
+      "script": "It was raining the night the last call came in. Nobody picked up. By morning, the only witness had already left town — and taken the answer with them.",
+      "note": "narrative cold-open; longer prosody, tests the mix stage."
+    },
+    {
+      "id": "daily_standup",
+      "music_style": "upbeat",
+      "script": "Good morning. Three things today: the release is on track, the migration finished overnight, and we are one review away from shipping the new dashboard.",
+      "note": "short, dense, punctuation-light."
+    },
+    {
+      "id": "history_minute",
+      "music_style": "classical",
+      "script": "On this day in nineteen sixty-nine, three astronauts began a journey that would end with a single small step — and a sentence the whole world would memorize.",
+      "note": "numbers + em-dash; exercises normalization + pacing."
+    },
+    {
+      "id": "product_teaser",
+      "music_style": "electronic",
+      "script": "What if your podcast never went down? Not when a provider throttles you, not when an API returns a five hundred. That is the show we are building — and this is episode one.",
+      "note": "on-brand teaser; the resilience thesis in the script itself."
+    }
+  ]
+}

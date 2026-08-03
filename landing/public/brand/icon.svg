@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="CastIron icon: broadcast arcs with an amber failover reroute">
+  <defs>
+    <linearGradient id="rc-brand" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="var(--primary-deep, #059669)"/>
+      <stop offset="0.6" stop-color="var(--primary, #10B981)"/>
+      <stop offset="1" stop-color="var(--primary-strong, #34D399)"/>
+    </linearGradient>
+    <radialGradient id="rc-depth" cx="0.75" cy="0.2" r="1.1">
+      <stop offset="0" stop-color="#12202B"/>
+      <stop offset="1" stop-color="var(--bg-0, #070B0E)"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Tile -->
+  <rect x="28" y="28" width="456" height="456" rx="104" fill="url(#rc-depth)"/>
+  <rect x="28" y="28" width="456" height="456" rx="104" fill="none"
+        stroke="rgba(148,163,184,0.22)" stroke-width="3"/>
+
+  <!-- Broadcast source -->
+  <circle cx="150" cy="366" r="34" fill="url(#rc-brand)"/>
+  <circle cx="150" cy="366" r="46" fill="none" stroke="var(--primary, #10B981)"
+          stroke-opacity="0.35" stroke-width="6"/>
+
+  <!-- Signal arcs (healthy) -->
+  <path d="M 150 266 A 100 100 0 0 1 250 366" fill="none"
+        stroke="url(#rc-brand)" stroke-width="30" stroke-linecap="round"/>
+  <path d="M 150 196 A 170 170 0 0 1 320 366" fill="none"
+        stroke="url(#rc-brand)" stroke-width="30" stroke-linecap="round" stroke-opacity="0.9"/>
+
+  <!-- Outer arc: broken mid-flight … -->
+  <path d="M 150 126 A 240 240 0 0 1 287.7 175.4" fill="none"
+        stroke="url(#rc-brand)" stroke-width="30" stroke-linecap="round" stroke-opacity="0.8"/>
+  <path d="M 346.6 224.3 A 240 240 0 0 1 390 366" fill="none"
+        stroke="url(#rc-brand)" stroke-width="30" stroke-linecap="round" stroke-opacity="0.8"/>
+
+  <!-- … amber failover reroute bridges the gap -->
+  <path d="M 291 145 A 272 272 0 0 1 378 231" fill="none"
+        stroke="var(--accent, #F59E0B)" stroke-width="24" stroke-linecap="round"/>
+  <circle cx="291" cy="145" r="15" fill="var(--accent, #F59E0B)"/>
+  <circle cx="378" cy="231" r="15" fill="var(--accent, #F59E0B)"/>
+</svg>
