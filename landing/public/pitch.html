@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CastIron — Pitch Deck</title>
+<meta name="description" content="CastIron — script to published episode, even when your TTS provider dies. Self-healing generative-media pipeline on Genblaze + Backblaze B2." />
+<link rel="icon" href="/icon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg-0:#070B0E; --bg-1:#0B1218; --panel:#12181c; --panel-2:#161d22;
+    --line:rgba(148,163,184,.16); --line-2:rgba(148,163,184,.30);
+    --forge:#10B981; --forge-2:#34D399; --forge-deep:#059669; --ember:#e0b23d; --ember-2:#FCD34D;
+    --ink:#E7EDF3; --muted:#94a1b0; --faint:#6b7480;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg-0);color:var(--ink);font-family:"Manrope",system-ui,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
+  .deck{position:fixed;inset:0}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+    padding:clamp(28px,6vw,96px);opacity:0;visibility:hidden;transform:translateY(14px);
+    transition:opacity .5s ease,transform .5s ease,visibility .5s;
+    background:radial-gradient(1100px 600px at 78% -12%,rgba(16,185,129,.12),transparent),var(--bg-0)}
+  .slide.active{opacity:1;visibility:visible;transform:none}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:clamp(11px,1.1vw,13px);letter-spacing:.22em;
+    text-transform:uppercase;color:var(--forge-2);margin-bottom:18px}
+  h1{font-family:"Unbounded","Space Grotesk",sans-serif;font-weight:800;line-height:1.04;letter-spacing:-.02em;
+    font-size:clamp(34px,6.2vw,80px)}
+  h2{font-family:"Space Grotesk",sans-serif;font-weight:700;line-height:1.05;letter-spacing:-.01em;
+    font-size:clamp(28px,4.6vw,52px);margin-bottom:22px}
+  .grad{background:linear-gradient(120deg,var(--forge-2),var(--forge) 55%,var(--forge-deep));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .amber{color:var(--ember)}
+  .lead{font-size:clamp(17px,2vw,24px);color:var(--muted);max-width:60ch;line-height:1.5}
+  .big{font-size:clamp(20px,2.4vw,30px);line-height:1.4;max-width:24ch}
+  ul{list-style:none;display:flex;flex-direction:column;gap:14px;margin-top:8px}
+  li{position:relative;padding-left:30px;font-size:clamp(15px,1.7vw,20px);color:var(--ink);line-height:1.45;max-width:62ch}
+  li::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:12px;border-radius:3px;
+    background:linear-gradient(135deg,var(--forge),var(--forge-2))}
+  .muted{color:var(--muted)} .mono{font-family:"JetBrains Mono",monospace}
+  code{font-family:"JetBrains Mono",monospace;background:rgba(16,185,129,.14);color:var(--forge-2);
+    padding:2px 7px;border-radius:6px;font-size:.9em}
+  .grid{display:grid;gap:18px;margin-top:10px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.035),transparent),var(--panel);
+    border:1px solid var(--line);border-radius:16px;padding:22px 24px}
+  .card .t{font-weight:700;font-size:clamp(15px,1.6vw,18px);margin:0 0 6px}
+  .card .d{color:var(--muted);font-size:clamp(12.5px,1.3vw,14.5px);line-height:1.5}
+  .stat{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:clamp(30px,4.4vw,56px);
+    background:linear-gradient(135deg,var(--forge-2),var(--forge));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat.a{background:linear-gradient(135deg,var(--ember-2),var(--ember));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .flow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+  .node{background:var(--panel);border:1px solid var(--line-2);border-radius:12px;padding:13px 16px;
+    font-family:"JetBrains Mono",monospace;font-size:clamp(11px,1.2vw,14px);line-height:1.4}
+  .node b{color:var(--forge-2)} .node.ambern{border-color:var(--ember);box-shadow:0 0 0 1px var(--ember)}
+  .node.ambern b{color:var(--ember)}
+  .arrow{color:var(--forge-2);font-size:20px}
+  .title-badge{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line-2);
+    border-radius:999px;padding:8px 16px;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--muted);margin-bottom:26px}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+  .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;border-radius:999px;
+    padding:13px 24px;font-size:clamp(14px,1.5vw,16px);transition:transform .15s,box-shadow .15s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn.p{color:#fff;background:linear-gradient(135deg,var(--forge-deep),var(--forge) 55%,var(--forge-2));
+    box-shadow:0 10px 30px rgba(16,185,129,.32)}
+  .btn.s{color:var(--ink);border:1px solid var(--line-2);background:rgba(255,255,255,.03)}
+  .brand{position:fixed;top:22px;left:26px;display:flex;align-items:center;gap:10px;z-index:10;
+    font-family:"Unbounded","Space Grotesk",sans-serif;font-weight:800;font-size:15px}
+  .dots{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:9px;z-index:10}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--line-2);border:0;cursor:pointer;padding:0;transition:all .2s}
+  .dot.on{background:linear-gradient(135deg,var(--forge-2),var(--forge));transform:scale(1.25)}
+  .nav{position:fixed;bottom:20px;right:26px;display:flex;gap:8px;z-index:10}
+  .nav button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line-2);background:rgba(255,255,255,.03);
+    color:var(--ink);font-size:18px;cursor:pointer;transition:all .15s}
+  .nav button:hover{border-color:var(--forge);color:var(--forge-2)}
+  .count{position:fixed;bottom:30px;left:26px;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--faint);z-index:10}
+  .hint{position:fixed;top:24px;right:26px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--faint);z-index:10}
+  @media(max-width:720px){.g3,.g4,.g2{grid-template-columns:1fr}.flow{flex-direction:column;align-items:flex-start}.arrow{transform:rotate(90deg)}}
+</style>
+</head>
+<body>
+<div class="brand">
+  <svg style="width:26px;height:26px" viewBox="0 0 512 512" aria-hidden="true">
+    <rect x="28" y="28" width="456" height="456" rx="104" fill="#0c1418"/>
+    <circle cx="150" cy="366" r="34" fill="#34D399"/>
+    <path d="M150 268 A 98 98 0 0 1 248 366" fill="none" stroke="#10B981" stroke-width="26" stroke-linecap="round"/>
+    <path d="M150 200 A 166 166 0 0 1 316 366" fill="none" stroke="#34D399" stroke-width="26" stroke-linecap="round"/>
+    <path d="M150 132 A 234 234 0 0 1 384 366" fill="none" stroke="#e0b23d" stroke-width="26" stroke-linecap="round"/>
+  </svg>
+  <span><span class="grad">Cast</span><span class="amber">Iron</span></span>
+</div>
+<div class="hint">← → to navigate</div>
+
+<div class="deck" id="deck">
+
+  <section class="slide">
+    <div class="title-badge">◎ Backblaze Generative Media Hackathon · Genblaze + B2</div>
+    <h1>Your TTS provider<br/>just died.<br/><span class="grad">The episode still ships.</span></h1>
+    <p class="lead" style="margin-top:26px">A self-healing audio-episode factory on Genblaze + Backblaze B2 — a cross-provider failover ladder, provenance sealed inside the MP3, and immutable Object-Locked publishing.</p>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">The problem</div>
+    <h2>Generative pipelines are brittle at <span class="amber">one point</span>.</h2>
+    <p class="big muted">The vendor. One TTS <b style="color:var(--ink)">402</b> or outage mid-run and the whole episode dies — half-generated, nothing shipped, no record of what happened.</p>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">The solution</div>
+    <h2>A ladder that <span class="grad">catches the fall</span>.</h2>
+    <ul>
+      <li><b>Failover ladder</b> — narration steps <span class="amber">ElevenLabs → LMNT → Hume</span> until a rung answers. The episode lands.</li>
+      <li><b>Tamper-evident manifest</b> — provenance is embedded <i>inside</i> the MP3 and hash-verified on read.</li>
+      <li><b>Immutable publish</b> — the final episode is written to an Object-Locked B2 bucket (GOVERNANCE) — it can't be silently changed.</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">How it works</div>
+    <h2>3-stage fan-out, <span class="grad">self-healing</span>.</h2>
+    <div class="flow">
+      <div class="node">POST /runs</div><span class="arrow">→</span>
+      <div class="node"><b>Pipeline.astream</b><br/>narration · music · cover</div><span class="arrow">→</span>
+      <div class="node ambern"><b>LadderTTSProvider</b><br/>rung fallback</div><span class="arrow">→</span>
+      <div class="node"><b>ObjectStorageSink</b><br/>Backblaze B2</div><span class="arrow">→</span>
+      <div class="node"><b>Object Lock</b><br/>publish</div>
+    </div>
+    <p class="lead mono" style="margin-top:26px;font-size:clamp(12px,1.3vw,15px)">Flip the <span class="amber">chaos</span> toggle → the ladder catches the outage live, and the manifest records the <b style="color:var(--ink)">actual</b> provider used.</p>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Sponsor integration — the SDK is the engine</div>
+    <h2>Genblaze runs it. <span class="grad">Backblaze B2</span> makes it permanent.</h2>
+    <div class="grid g2">
+      <div class="card"><div class="t">Genblaze — the pipeline</div><div class="d">Real <code>Pipeline.astream</code> fan-out, a custom <code>LadderTTSProvider</code> over the provider interface, and <code>read_manifest(verify=True)</code> — the failover and provenance are SDK code paths, not glue.</div></div>
+      <div class="card"><div class="t">Backblaze B2 — the vault</div><div class="d"><b>Object Lock</b> (GOVERNANCE, 30d) for immutable episodes, <b>Event Notifications</b> → HMAC-verified webhook, and the S3 storage backend for the media store.</div></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">The hero moment</div>
+    <h2>Chaos on. <span class="grad">Zero dropped.</span></h2>
+    <p class="big" style="max-width:34ch">Force a TTS outage and the ladder steps from rung 0 to rung 1 <span class="muted">mid-run</span> — the episode still publishes, and the manifest proves which provider actually shipped it.</p>
+    <p class="muted mono" style="margin-top:22px;font-size:clamp(12px,1.3vw,15px)">Proven across healthy <span class="amber">+ forced-outage</span> runs.</p>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Proof</div>
+    <h2>Reproducible with <span class="grad">one command</span>.</h2>
+    <div class="grid g4">
+      <div class="card"><div class="stat">96/96</div><div class="d">episodes shipped hash-verified — 0 dropped</div></div>
+      <div class="card"><div class="stat a">p95 134ms</div><div class="d">failover latency (p50 ≈ 120ms), orchestration only</div></div>
+      <div class="card"><div class="stat">175</div><div class="d">tests, green offline end-to-end</div></div>
+      <div class="card"><div class="stat">100%</div><div class="d">line coverage across app + engine</div></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="kicker">Why it wins · what's next</div>
+    <h2>Reliability is the <span class="grad">feature</span>.</h2>
+    <ul>
+      <li>The failure everyone hand-waves — vendor death — is the thing this ships through, on the real SDK.</li>
+      <li>Provenance + Object Lock make every episode verifiable and tamper-evident, not just generated.</li>
+      <li><span class="muted">Next:</span> more rungs, live vendor keys in the ladder, and a public verification page for any published episode.</li>
+    </ul>
+    <div class="links">
+      <a class="btn p" href="https://castiron.edycu.dev" target="_blank" rel="noreferrer">Live landing →</a>
+      <a class="btn s" href="https://api.castiron.edycu.dev/console" target="_blank" rel="noreferrer">Open the console</a>
+      <a class="btn s" href="https://github.com/edycutjong/castiron" target="_blank" rel="noreferrer">Source</a>
+    </div>
+  </section>
+
+</div>
+
+<div class="count" id="count">01 / 08</div>
+<div class="dots" id="dots"></div>
+<div class="nav"><button id="prev" aria-label="Previous">‹</button><button id="next" aria-label="Next">›</button></div>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  const dotsWrap = document.getElementById('dots');
+  const count = document.getElementById('count');
+  let i = 0;
+  slides.forEach((_, n) => {
+    const b = document.createElement('button'); b.className = 'dot'; b.setAttribute('aria-label','Slide '+(n+1));
+    b.addEventListener('click', () => go(n)); dotsWrap.appendChild(b);
+  });
+  const dots = [...dotsWrap.children];
+  const pad = n => String(n).padStart(2,'0');
+  function go(n){
+    i = Math.max(0, Math.min(slides.length-1, n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    dots.forEach((d,k)=>d.classList.toggle('on',k===i));
+    count.textContent = pad(i+1)+' / '+pad(slides.length);
+  }
+  document.getElementById('next').addEventListener('click',()=>go(i+1));
+  document.getElementById('prev').addEventListener('click',()=>go(i-1));
+  addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(i+1)}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1)}
+    if(e.key==='Home')go(0); if(e.key==='End')go(slides.length-1);
+  });
+  let sx=null; addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+  addEventListener('touchend',e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)go(i+(dx<0?1:-1));sx=null});
+  go(0);
+</script>
+</body>
+</html>
