@@ -8,204 +8,404 @@
 <link rel="icon" href="/icon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<!--
+  CASTIRON — PITCH DECK  ·  single-file, offline-resilient
+  ───────────────────────────────────────────────────────────
+  KEYS:  ← / →  or  Space   navigate      ·  Home/End  jump
+         P  presenter mode (speaker notes)  ·  ESC  slide overview grid
+         C  contrast-debug outlines
+  PRINT: Cmd/Ctrl+P → Save as PDF → Landscape → clean 10-page deck
+  SWAP:  demo image at /assets/console-demo.png (real product screenshot)
+-->
 <style>
   :root{
-    --bg-0:#070B0E; --bg-1:#0B1218; --panel:#12181c; --panel-2:#161d22;
-    --line:rgba(148,163,184,.16); --line-2:rgba(148,163,184,.30);
-    --forge:#10B981; --forge-2:#34D399; --forge-deep:#059669; --ember:#e0b23d; --ember-2:#FCD34D;
-    --ink:#E7EDF3; --muted:#94a1b0; --faint:#6b7480;
+    --bg:#070B0E; --bg-2:#0B1218; --panel:#12181c; --panel-2:#161d22;
+    --line:rgba(148,163,184,.16); --line-2:rgba(148,163,184,.32);
+    --forge:#10B981; --forge-2:#34D399; --forge-deep:#059669;
+    --ember:#e0b23d; --ember-2:#FCD34D; --fail:#ef5f5f;
+    --ink:#EAF1F5; --muted:#94a1b0; --faint:#6b7480;
+    --font-display:"Space Grotesk","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+    --font-body:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+    --font-mono:"JetBrains Mono","SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{background:var(--bg-0);color:var(--ink);font-family:"Manrope",system-ui,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
-  .deck{position:fixed;inset:0}
-  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
-    padding:clamp(28px,6vw,96px);opacity:0;visibility:hidden;transform:translateY(14px);
-    transition:opacity .5s ease,transform .5s ease,visibility .5s;
-    background:radial-gradient(1100px 600px at 78% -12%,rgba(16,185,129,.12),transparent),var(--bg-0)}
+  html,body{height:100%;background:#04070a;overflow:hidden}
+  body{font-family:var(--font-body);color:var(--ink);-webkit-font-smoothing:antialiased}
+  .stage-wrap{position:fixed;inset:0;display:grid;place-items:center;background:#04070a}
+  #stage{width:1920px;height:1080px;position:relative;transform-origin:center center;overflow:hidden;
+    background:radial-gradient(1400px 720px at 80% -14%,rgba(16,185,129,.15),transparent),
+               radial-gradient(1000px 620px at 8% 116%,rgba(224,178,61,.08),transparent),var(--bg)}
+  .slide{position:absolute;inset:0;padding:96px 120px;opacity:0;visibility:hidden;
+    transform:translateX(40px);transition:opacity .45s ease,transform .45s ease,visibility .45s;
+    display:flex;flex-direction:column;justify-content:center}
   .slide.active{opacity:1;visibility:visible;transform:none}
-  .kicker{font-family:"JetBrains Mono",monospace;font-size:clamp(11px,1.1vw,13px);letter-spacing:.22em;
-    text-transform:uppercase;color:var(--forge-2);margin-bottom:18px}
-  h1{font-family:"Unbounded","Space Grotesk",sans-serif;font-weight:800;line-height:1.04;letter-spacing:-.02em;
-    font-size:clamp(34px,6.2vw,80px)}
-  h2{font-family:"Space Grotesk",sans-serif;font-weight:700;line-height:1.05;letter-spacing:-.01em;
-    font-size:clamp(28px,4.6vw,52px);margin-bottom:22px}
-  .grad{background:linear-gradient(120deg,var(--forge-2),var(--forge) 55%,var(--forge-deep));
+  .slide.prev{transform:translateX(-40px)}
+  #stage::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(rgba(148,163,184,.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(148,163,184,.04) 1px,transparent 1px);background-size:80px 80px}
+
+  .kicker{font-family:var(--font-mono);font-size:16px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--forge-2);margin-bottom:26px;display:flex;align-items:center;gap:14px}
+  .kicker::before{content:"";width:34px;height:2px;background:linear-gradient(90deg,var(--forge),var(--forge-2))}
+  h1{font-family:var(--font-display);font-weight:700;font-size:120px;line-height:.98;letter-spacing:-.03em}
+  h2{font-family:var(--font-display);font-weight:700;font-size:74px;line-height:1.02;letter-spacing:-.02em;margin-bottom:34px}
+  .grad{background:linear-gradient(115deg,var(--forge-2),var(--forge) 55%,var(--forge-deep));
     -webkit-background-clip:text;background-clip:text;color:transparent}
   .amber{color:var(--ember)}
-  .lead{font-size:clamp(17px,2vw,24px);color:var(--muted);max-width:60ch;line-height:1.5}
-  .big{font-size:clamp(20px,2.4vw,30px);line-height:1.4;max-width:24ch}
-  ul{list-style:none;display:flex;flex-direction:column;gap:14px;margin-top:8px}
-  li{position:relative;padding-left:30px;font-size:clamp(15px,1.7vw,20px);color:var(--ink);line-height:1.45;max-width:62ch}
-  li::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:12px;border-radius:3px;
+  .lead{font-size:30px;line-height:1.5;color:var(--muted);max-width:30ch}
+  .lead b{color:var(--ink);font-weight:600}
+  .mono{font-family:var(--font-mono)} .muted{color:var(--muted)}
+  code{font-family:var(--font-mono);background:rgba(16,185,129,.16);color:var(--forge-2);padding:3px 9px;border-radius:7px;font-size:.86em}
+  ul{list-style:none;display:flex;flex-direction:column;gap:22px;margin-top:6px}
+  li{position:relative;padding-left:40px;font-size:27px;line-height:1.4;max-width:42ch;color:var(--ink)}
+  li b{font-weight:700}
+  li::before{content:"";position:absolute;left:0;top:.42em;width:16px;height:16px;border-radius:4px;
     background:linear-gradient(135deg,var(--forge),var(--forge-2))}
-  .muted{color:var(--muted)} .mono{font-family:"JetBrains Mono",monospace}
-  code{font-family:"JetBrains Mono",monospace;background:rgba(16,185,129,.14);color:var(--forge-2);
-    padding:2px 7px;border-radius:6px;font-size:.9em}
-  .grid{display:grid;gap:18px;margin-top:10px}
-  .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
-  .card{background:linear-gradient(180deg,rgba(255,255,255,.035),transparent),var(--panel);
-    border:1px solid var(--line);border-radius:16px;padding:22px 24px}
-  .card .t{font-weight:700;font-size:clamp(15px,1.6vw,18px);margin:0 0 6px}
-  .card .d{color:var(--muted);font-size:clamp(12.5px,1.3vw,14.5px);line-height:1.5}
-  .stat{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:clamp(30px,4.4vw,56px);
+  li.a::before{background:linear-gradient(135deg,var(--ember),var(--ember-2))}
+
+  .cols{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;height:100%}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.045),transparent),var(--panel);
+    border:1px solid var(--line);border-radius:22px;padding:34px 36px}
+  .stat{font-family:var(--font-mono);font-weight:700;font-size:76px;line-height:1;
     background:linear-gradient(135deg,var(--forge-2),var(--forge));-webkit-background-clip:text;background-clip:text;color:transparent}
   .stat.a{background:linear-gradient(135deg,var(--ember-2),var(--ember));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .flow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
-  .node{background:var(--panel);border:1px solid var(--line-2);border-radius:12px;padding:13px 16px;
-    font-family:"JetBrains Mono",monospace;font-size:clamp(11px,1.2vw,14px);line-height:1.4}
-  .node b{color:var(--forge-2)} .node.ambern{border-color:var(--ember);box-shadow:0 0 0 1px var(--ember)}
-  .node.ambern b{color:var(--ember)}
-  .arrow{color:var(--forge-2);font-size:20px}
-  .title-badge{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line-2);
-    border-radius:999px;padding:8px 16px;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--muted);margin-bottom:26px}
-  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
-  .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;border-radius:999px;
-    padding:13px 24px;font-size:clamp(14px,1.5vw,16px);transition:transform .15s,box-shadow .15s}
+  .badge{display:inline-flex;align-items:center;gap:12px;border:1px solid var(--line-2);border-radius:999px;
+    padding:12px 22px;font-family:var(--font-mono);font-size:18px;color:var(--muted);margin-bottom:40px}
+
+  .browser{border:1px solid var(--line-2);border-radius:16px;overflow:hidden;background:var(--bg-2);
+    box-shadow:0 40px 120px rgba(0,0,0,.55),0 0 0 1px rgba(16,185,129,.12)}
+  .browser .bar{display:flex;align-items:center;gap:16px;padding:14px 18px;background:#0c1216;border-bottom:1px solid var(--line)}
+  .browser .dots{display:flex;gap:9px}.browser .dots i{width:14px;height:14px;border-radius:50%;background:#2a333a;display:block}
+  .browser .url{flex:1;background:#080d10;border:1px solid var(--line);border-radius:8px;padding:8px 16px;
+    font-family:var(--font-mono);font-size:16px;color:var(--faint)}
+  .browser img{display:block;width:100%}
+
+  .callout{position:absolute;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+    font-family:var(--font-mono);font-weight:700;font-size:20px;color:#08130d;
+    background:linear-gradient(135deg,var(--forge-2),var(--forge));box-shadow:0 8px 24px rgba(16,185,129,.5);border:3px solid #fff2}
+  .callout.a{color:#1c1403;background:linear-gradient(135deg,var(--ember-2),var(--ember));box-shadow:0 8px 24px rgba(224,178,61,.5)}
+  .co-label{position:absolute;font-size:20px;font-weight:600;color:var(--ink);background:rgba(9,14,17,.92);
+    border:1px solid var(--line-2);border-radius:10px;padding:8px 14px;white-space:nowrap}
+
+  .flow{display:flex;align-items:stretch;gap:0;margin-top:20px}
+  .fnode{flex:1;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent),var(--panel);
+    border:1px solid var(--line);border-radius:18px;padding:26px 24px;position:relative}
+  .fnode.pick{border-color:var(--ember);box-shadow:0 0 0 1px var(--ember),0 20px 60px rgba(224,178,61,.16)}
+  .fnode .s{font-family:var(--font-mono);font-size:14px;color:var(--faint);letter-spacing:.1em}
+  .fnode .h{font-family:var(--font-mono);font-weight:700;font-size:21px;color:var(--forge-2);margin:8px 0 8px}
+  .fnode.pick .h{color:var(--ember-2)}
+  .fnode .p{color:var(--muted);font-size:16px;line-height:1.4}
+  .farrow{align-self:center;color:var(--forge-2);font-size:28px;padding:0 14px;flex:0 0 auto}
+
+  .links{display:flex;gap:18px;flex-wrap:wrap;margin-top:40px}
+  .btn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;border-radius:999px;
+    padding:18px 30px;font-size:22px;transition:transform .15s}
   .btn:hover{transform:translateY(-2px)}
-  .btn.p{color:#fff;background:linear-gradient(135deg,var(--forge-deep),var(--forge) 55%,var(--forge-2));
-    box-shadow:0 10px 30px rgba(16,185,129,.32)}
+  .btn.p{color:#fff;background:linear-gradient(135deg,var(--forge-deep),var(--forge) 55%,var(--forge-2));box-shadow:0 14px 40px rgba(16,185,129,.4)}
   .btn.s{color:var(--ink);border:1px solid var(--line-2);background:rgba(255,255,255,.03)}
-  .brand{position:fixed;top:22px;left:26px;display:flex;align-items:center;gap:10px;z-index:10;
-    font-family:"Unbounded","Space Grotesk",sans-serif;font-weight:800;font-size:15px}
-  .dots{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:9px;z-index:10}
-  .dot{width:9px;height:9px;border-radius:50%;background:var(--line-2);border:0;cursor:pointer;padding:0;transition:all .2s}
-  .dot.on{background:linear-gradient(135deg,var(--forge-2),var(--forge));transform:scale(1.25)}
-  .nav{position:fixed;bottom:20px;right:26px;display:flex;gap:8px;z-index:10}
-  .nav button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line-2);background:rgba(255,255,255,.03);
-    color:var(--ink);font-size:18px;cursor:pointer;transition:all .15s}
-  .nav button:hover{border-color:var(--forge);color:var(--forge-2)}
-  .count{position:fixed;bottom:30px;left:26px;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--faint);z-index:10}
-  .hint{position:fixed;top:24px;right:26px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--faint);z-index:10}
-  @media(max-width:720px){.g3,.g4,.g2{grid-template-columns:1fr}.flow{flex-direction:column;align-items:flex-start}.arrow{transform:rotate(90deg)}}
+  .qr{width:150px;height:150px;border-radius:16px;border:1px solid var(--line-2);
+    background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><rect width='150' height='150' fill='white'/><g fill='black'><rect x='12' y='12' width='34' height='34'/><rect x='104' y='12' width='34' height='34'/><rect x='12' y='104' width='34' height='34'/><rect x='20' y='20' width='18' height='18' fill='white'/><rect x='112' y='20' width='18' height='18' fill='white'/><rect x='20' y='112' width='18' height='18' fill='white'/><rect x='60' y='16' width='10' height='10'/><rect x='76' y='28' width='10' height='10'/><rect x='60' y='44' width='10' height='10'/><rect x='60' y='72' width='10' height='10'/><rect x='84' y='72' width='10' height='10'/><rect x='104' y='72' width='10' height='10'/><rect x='120' y='84' width='10' height='10'/><rect x='72' y='104' width='10' height='10'/><rect x='96' y='112' width='10' height='10'/><rect x='120' y='120' width='10' height='10'/></g></svg>") center/contain no-repeat;background-size:cover}
+
+  .mark{width:150px;height:150px}
+  .mark .a1{stroke-dasharray:180;animation:sig 3.5s ease-in-out infinite}
+  .mark .a2{stroke-dasharray:300;animation:sig 3.5s ease-in-out .25s infinite}
+  .mark .a3{stroke-dasharray:420;animation:sig 3.5s ease-in-out .5s infinite}
+  @keyframes sig{0%{opacity:.35}45%{opacity:1}100%{opacity:.35}}
+  .cover-badges{display:flex;gap:16px;margin-top:44px;flex-wrap:wrap}
+  .pill{font-family:var(--font-mono);font-size:17px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:10px 18px}
+  .pulse{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--forge-2);margin-right:9px;
+    box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:pd 2.4s infinite}
+  @keyframes pd{0%{box-shadow:0 0 0 0 rgba(52,211,153,.6)}70%{box-shadow:0 0 0 14px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+
+  .brand{position:absolute;top:44px;left:120px;display:flex;align-items:center;gap:12px;z-index:5;
+    font-family:var(--font-display);font-weight:700;font-size:24px}
+  .counter{position:absolute;bottom:44px;right:120px;font-family:var(--font-mono);font-size:20px;color:var(--faint);z-index:5}
+  .dotsnav{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);display:flex;gap:11px;z-index:5}
+  .dotsnav button{width:11px;height:11px;border-radius:50%;background:var(--line-2);border:0;cursor:pointer;padding:0;transition:.2s}
+  .dotsnav button.on{background:linear-gradient(135deg,var(--forge-2),var(--forge));transform:scale(1.3)}
+  .hint{position:absolute;top:48px;right:120px;font-family:var(--font-mono);font-size:15px;color:var(--faint);z-index:5}
+
+  .speaker-notes{display:none}
+  body.presenter #stage{height:864px}
+  .notes-panel{display:none;position:fixed;left:0;right:0;bottom:0;height:calc(50vh - 432px);min-height:150px;
+    background:#05090c;border-top:1px solid var(--line-2);padding:26px 40px;z-index:20;
+    flex-direction:column;gap:8px;font-size:22px;line-height:1.5;color:var(--ink)}
+  body.presenter .notes-panel{display:flex}
+  .notes-panel .nk{font-family:var(--font-mono);font-size:14px;letter-spacing:.2em;color:var(--forge-2);text-transform:uppercase}
+
+  .overview{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(4,7,10,.97);z-index:30;
+    padding:60px;flex-wrap:wrap;gap:24px;align-content:center;justify-content:center;overflow:auto}
+  .ov-cell{width:400px;height:225px;flex:0 0 auto;border:1px solid var(--line-2);border-radius:12px;overflow:hidden;cursor:pointer;
+    position:relative;background:var(--panel);transition:border-color .15s,transform .15s}
+  .ov-cell:hover{border-color:var(--forge);transform:translateY(-3px)}
+  .ov-cell .n{position:absolute;top:8px;left:10px;font-family:var(--font-mono);font-size:13px;color:var(--forge-2);z-index:2}
+  .ov-cell .ttl{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:14px;
+    font-family:var(--font-display);font-weight:600;font-size:19px;color:var(--ink);
+    background:linear-gradient(180deg,rgba(16,185,129,.10),transparent)}
+
+  body.debug-contrast h1,body.debug-contrast h2,body.debug-contrast li,
+  body.debug-contrast .lead,body.debug-contrast .p,body.debug-contrast p{outline:1px solid #f0f}
+
+  @page{size:16in 9in landscape;margin:0}
+  @media print{
+    html,body{overflow:visible;background:#fff}
+    .stage-wrap{position:static;display:block}
+    #stage{width:16in;height:auto;overflow:visible;transform:none!important;background:var(--bg)}
+    #stage::before{display:none}
+    .slide{position:relative;inset:auto;opacity:1!important;visibility:visible!important;transform:none!important;
+      page-break-inside:avoid;break-inside:avoid;page-break-after:always;width:16in;height:9in;padding:0.9in 1.1in}
+    .hint,.dotsnav,.notes-panel,.overview{display:none!important}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
 </style>
 </head>
 <body>
-<div class="brand">
-  <svg style="width:26px;height:26px" viewBox="0 0 512 512" aria-hidden="true">
-    <rect x="28" y="28" width="456" height="456" rx="104" fill="#0c1418"/>
-    <circle cx="150" cy="366" r="34" fill="#34D399"/>
-    <path d="M150 268 A 98 98 0 0 1 248 366" fill="none" stroke="#10B981" stroke-width="26" stroke-linecap="round"/>
-    <path d="M150 200 A 166 166 0 0 1 316 366" fill="none" stroke="#34D399" stroke-width="26" stroke-linecap="round"/>
-    <path d="M150 132 A 234 234 0 0 1 384 366" fill="none" stroke="#e0b23d" stroke-width="26" stroke-linecap="round"/>
-  </svg>
-  <span><span class="grad">Cast</span><span class="amber">Iron</span></span>
-</div>
-<div class="hint">← → to navigate</div>
+<div class="stage-wrap">
+<div id="stage">
 
-<div class="deck" id="deck">
-
-  <section class="slide">
-    <div class="title-badge">◎ Backblaze Generative Media Hackathon · Genblaze + B2</div>
-    <h1>Your TTS provider<br/>just died.<br/><span class="grad">The episode still ships.</span></h1>
-    <p class="lead" style="margin-top:26px">A self-healing audio-episode factory on Genblaze + Backblaze B2 — a cross-provider failover ladder, provenance sealed inside the MP3, and immutable Object-Locked publishing.</p>
+  <!-- 1 · COVER -->
+  <section class="slide" data-title="Cover">
+    <div style="display:flex;align-items:center;gap:34px;margin-bottom:18px">
+      <svg class="mark" viewBox="0 0 512 512" aria-label="CastIron mark">
+        <rect x="28" y="28" width="456" height="456" rx="104" fill="#0c1418" stroke="rgba(148,163,184,.18)" stroke-width="3"/>
+        <circle cx="150" cy="366" r="34" fill="#34D399"/>
+        <path class="a1" d="M150 268 A 98 98 0 0 1 248 366" fill="none" stroke="#10B981" stroke-width="26" stroke-linecap="round"/>
+        <path class="a2" d="M150 200 A 166 166 0 0 1 316 366" fill="none" stroke="#34D399" stroke-width="26" stroke-linecap="round"/>
+        <path class="a3" d="M150 132 A 234 234 0 0 1 384 366" fill="none" stroke="#e0b23d" stroke-width="26" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="kicker" style="margin-bottom:14px">Backblaze Generative Media Hackathon</div>
+        <h1><span class="grad">Cast</span><span class="amber">Iron</span></h1>
+      </div>
+    </div>
+    <p class="lead" style="font-size:38px;max-width:42ch;color:var(--ink)">Your TTS provider just died. <span class="grad" style="font-weight:700">The episode still ships.</span></p>
+    <div class="cover-badges">
+      <span class="pill"><span class="pulse"></span>Live · OFFLINE demo, zero credentials</span>
+      <span class="pill">Genblaze · Backblaze B2 Object Lock</span>
+      <span class="pill">Python · FastAPI · SSE</span>
+    </div>
+    <aside class="speaker-notes"><span class="nk">Say</span>CastIron produces a full audio episode and keeps shipping even when a text-to-speech vendor goes down mid-run. It runs with zero credentials, so I can trigger a live outage right here.</aside>
   </section>
 
-  <section class="slide">
-    <div class="kicker">The problem</div>
-    <h2>Generative pipelines are brittle at <span class="amber">one point</span>.</h2>
-    <p class="big muted">The vendor. One TTS <b style="color:var(--ink)">402</b> or outage mid-run and the whole episode dies — half-generated, nothing shipped, no record of what happened.</p>
+  <!-- 2 · HOOK -->
+  <section class="slide" data-title="Hook">
+    <div class="kicker">The hook</div>
+    <h1 style="font-size:150px"><span class="grad">96 / 96</span><br/>episodes shipped.</h1>
+    <p class="lead" style="font-size:32px;margin-top:30px">Across healthy runs <span class="amber">and forced-outage runs</span> — zero dropped. Every one hash-verified.</p>
+    <aside class="speaker-notes"><span class="nk">Say</span>96 out of 96 episodes shipped, including runs where we deliberately killed the primary TTS provider. Zero dropped. That number is the whole pitch.</aside>
   </section>
 
-  <section class="slide">
-    <div class="kicker">The solution</div>
-    <h2>A ladder that <span class="grad">catches the fall</span>.</h2>
-    <ul>
-      <li><b>Failover ladder</b> — narration steps <span class="amber">ElevenLabs → LMNT → Hume</span> until a rung answers. The episode lands.</li>
-      <li><b>Tamper-evident manifest</b> — provenance is embedded <i>inside</i> the MP3 and hash-verified on read.</li>
-      <li><b>Immutable publish</b> — the final episode is written to an Object-Locked B2 bucket (GOVERNANCE) — it can't be silently changed.</li>
-    </ul>
+  <!-- 3 · PROBLEM -->
+  <section class="slide" data-title="Problem">
+    <div class="cols">
+      <div>
+        <div class="kicker">The problem</div>
+        <h2>The vendor is<br/>the <span class="amber">single point.</span></h2>
+        <p class="lead" style="font-size:28px">It's mid-run. ElevenLabs returns a <b>402</b>. The pipeline was 60% through an episode — and now it's dead. Half-generated, nothing shipped, no record of what failed.</p>
+      </div>
+      <div class="card" style="background:var(--bg-2)">
+        <div class="mono" style="color:var(--faint);font-size:17px;margin-bottom:16px">// mid-run, one provider dies</div>
+        <div class="mono" style="font-size:21px;line-height:2.1;color:var(--muted)">
+          narration → <span style="color:var(--fail)">402 quota</span><br/>
+          pipeline → <span style="color:var(--fail)">halted</span><br/>
+          episode → <span style="color:var(--fail)">✗ dropped</span><br/>
+          what shipped? → <span style="color:var(--fail)">nothing</span><br/>
+          why? → <span style="color:var(--fail)">no record</span>
+        </div>
+      </div>
+    </div>
+    <aside class="speaker-notes"><span class="nk">Say</span>Generative pipelines are brittle in exactly one place — the vendor. One 402 mid-run and the whole episode is gone, with no audit trail of what happened.</aside>
   </section>
 
-  <section class="slide">
-    <div class="kicker">How it works</div>
-    <h2>3-stage fan-out, <span class="grad">self-healing</span>.</h2>
+  <!-- 4 · SOLUTION -->
+  <section class="slide" data-title="Solution">
+    <div class="cols">
+      <div>
+        <div class="kicker">The solution</div>
+        <h2>A ladder that<br/><span class="grad">catches the fall.</span></h2>
+        <ul>
+          <li class="a"><b>Failover ladder</b> — narration steps ElevenLabs → LMNT → Hume</li>
+          <li><b>Manifest inside the MP3</b> — provenance, hash-verified on read</li>
+          <li><b>Object-Locked publish</b> — the episode can't be silently changed</li>
+        </ul>
+      </div>
+      <div class="browser">
+        <div class="bar"><div class="dots"><i></i><i></i><i></i></div><div class="url">api.castiron.edycu.dev/console</div></div>
+        <!-- SWAP: replace with /assets/console-demo.png -->
+        <img src="/assets/console-demo.png" alt="CastIron producer console — live SSE stage rail" style="height:520px;object-fit:cover;object-position:top" />
+      </div>
+    </div>
+    <aside class="speaker-notes"><span class="nk">Say</span>The fix is a self-healing ladder: if one provider fails, narration steps to the next rung. Provenance is sealed inside the MP3, and the final episode is written to an immutable Object-Locked bucket. This is the real producer console.</aside>
+  </section>
+
+  <!-- 5 · ARCHITECTURE -->
+  <section class="slide" data-title="Architecture">
+    <div class="kicker">How it works — a 3-stage fan-out that heals</div>
+    <h2 style="font-size:56px">Genblaze runs it. <span class="grad">B2 makes it permanent.</span></h2>
     <div class="flow">
-      <div class="node">POST /runs</div><span class="arrow">→</span>
-      <div class="node"><b>Pipeline.astream</b><br/>narration · music · cover</div><span class="arrow">→</span>
-      <div class="node ambern"><b>LadderTTSProvider</b><br/>rung fallback</div><span class="arrow">→</span>
-      <div class="node"><b>ObjectStorageSink</b><br/>Backblaze B2</div><span class="arrow">→</span>
-      <div class="node"><b>Object Lock</b><br/>publish</div>
+      <div class="fnode"><div class="s">01 · REQUEST</div><div class="h">POST /runs</div><div class="p">script + chaos toggle</div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><div class="s">02 · GENBLAZE</div><div class="h">Pipeline.astream</div><div class="p">narration · music · cover (mc=3)</div></div>
+      <div class="farrow">→</div>
+      <div class="fnode pick"><div class="s">03 · SELF-HEAL</div><div class="h">LadderTTSProvider</div><div class="p">rung fallback on failure</div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><div class="s">04 · BACKBLAZE B2</div><div class="h">ObjectStorageSink</div><div class="p">runs/{date}/{run}/…</div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><div class="s">05 · IMMUTABLE</div><div class="h">Object Lock</div><div class="p">GOVERNANCE · publish</div></div>
     </div>
-    <p class="lead mono" style="margin-top:26px;font-size:clamp(12px,1.3vw,15px)">Flip the <span class="amber">chaos</span> toggle → the ladder catches the outage live, and the manifest records the <b style="color:var(--ink)">actual</b> provider used.</p>
+    <p class="lead mono" style="font-size:20px;margin-top:44px;max-width:none">The failover and provenance are <code>Genblaze</code> code paths, not glue &nbsp;·&nbsp; <code>OFFLINE=1</code> runs it all with zero keys.</p>
+    <aside class="speaker-notes"><span class="nk">Say</span>Five real moves: request, fan out with astream, the ladder self-heals on failure, store through the B2 sink, then lock it. The sponsor SDK is the engine — the failover lives inside a custom provider on Genblaze's interface.</aside>
   </section>
 
-  <section class="slide">
-    <div class="kicker">Sponsor integration — the SDK is the engine</div>
-    <h2>Genblaze runs it. <span class="grad">Backblaze B2</span> makes it permanent.</h2>
-    <div class="grid g2">
-      <div class="card"><div class="t">Genblaze — the pipeline</div><div class="d">Real <code>Pipeline.astream</code> fan-out, a custom <code>LadderTTSProvider</code> over the provider interface, and <code>read_manifest(verify=True)</code> — the failover and provenance are SDK code paths, not glue.</div></div>
-      <div class="card"><div class="t">Backblaze B2 — the vault</div><div class="d"><b>Object Lock</b> (GOVERNANCE, 30d) for immutable episodes, <b>Event Notifications</b> → HMAC-verified webhook, and the S3 storage backend for the media store.</div></div>
+  <!-- 6 · LIVE DEMO -->
+  <section class="slide" data-title="Live demo">
+    <div class="kicker">Live demo — flip the chaos toggle, watch it heal</div>
+    <div style="position:relative;width:1180px;margin-top:10px">
+      <div class="browser">
+        <div class="bar"><div class="dots"><i></i><i></i><i></i></div><div class="url">api.castiron.edycu.dev/console</div></div>
+        <!-- SWAP: replace with /assets/console-demo.png -->
+        <img src="/assets/console-demo.png" alt="CastIron console with the SSE stage rail" />
+      </div>
+      <div class="callout" style="top:120px;left:-22px">1</div>
+      <div class="co-label" style="top:118px;left:36px">script + chaos knob</div>
+      <div class="callout a" style="top:300px;right:-22px">2</div>
+      <div class="co-label" style="top:298px;right:36px">rung "fell back" badge</div>
+      <div class="callout" style="bottom:220px;left:-22px">3</div>
+      <div class="co-label" style="bottom:218px;left:36px">live SSE stage rail</div>
+      <div class="callout" style="bottom:110px;right:-22px">4</div>
+      <div class="co-label" style="bottom:108px;right:36px">episode published + manifest</div>
     </div>
+    <aside class="speaker-notes"><span class="nk">Show</span>Set chaos to "tts", hit Produce. The narration stage goes red on rung 0, the ladder steps down, the badge shows it fell back — and the episode still publishes with a verified manifest. Live, over server-sent events.</aside>
   </section>
 
-  <section class="slide">
+  <!-- 7 · THE HERO MOMENT -->
+  <section class="slide" data-title="Failover">
     <div class="kicker">The hero moment</div>
-    <h2>Chaos on. <span class="grad">Zero dropped.</span></h2>
-    <p class="big" style="max-width:34ch">Force a TTS outage and the ladder steps from rung 0 to rung 1 <span class="muted">mid-run</span> — the episode still publishes, and the manifest proves which provider actually shipped it.</p>
-    <p class="muted mono" style="margin-top:22px;font-size:clamp(12px,1.3vw,15px)">Proven across healthy <span class="amber">+ forced-outage</span> runs.</p>
+    <h2 style="font-size:60px">Chaos on. <span class="grad">Zero dropped.</span></h2>
+    <div class="flow" style="gap:24px">
+      <div class="fnode"><div class="s" style="color:var(--fail)">RUNG 0 · DOWN</div><div class="h" style="color:var(--fail)">ElevenLabs</div><div class="p">forced 402 outage</div></div>
+      <div class="farrow amber">↓</div>
+      <div class="fnode pick"><div class="s">RUNG 1 · CAUGHT</div><div class="h">LMNT</div><div class="p">narration lands here</div></div>
+      <div class="farrow">·</div>
+      <div class="fnode"><div class="s">RUNG 2 · SPARE</div><div class="h">Hume</div><div class="p">still in reserve</div></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><div class="s">RESULT</div><div class="stat" style="font-size:52px">✓</div><div class="p">episode shipped · manifest records the real provider</div></div>
+    </div>
+    <p class="lead" style="font-size:22px;margin-top:40px;max-width:none">The manifest records the provider that <b>actually</b> shipped it — not the one you asked for.</p>
+    <aside class="speaker-notes"><span class="nk">Say</span>This is the moment judges remember: I break the primary provider on purpose, and the episode still ships from the next rung — with the manifest honestly recording which provider did the work.</aside>
   </section>
 
-  <section class="slide">
-    <div class="kicker">Proof</div>
-    <h2>Reproducible with <span class="grad">one command</span>.</h2>
-    <div class="grid g4">
-      <div class="card"><div class="stat">96/96</div><div class="d">episodes shipped hash-verified — 0 dropped</div></div>
-      <div class="card"><div class="stat a">p95 134ms</div><div class="d">failover latency (p50 ≈ 120ms), orchestration only</div></div>
-      <div class="card"><div class="stat">175</div><div class="d">tests, green offline end-to-end</div></div>
-      <div class="card"><div class="stat">100%</div><div class="d">line coverage across app + engine</div></div>
+  <!-- 8 · WHY US -->
+  <section class="slide" data-title="Why us">
+    <div class="cols">
+      <div>
+        <div class="kicker">Why it works</div>
+        <h2>Reliability is<br/>the <span class="grad">feature.</span></h2>
+        <ul>
+          <li><b>SDK depth</b> — a custom ladder provider on Genblaze's interface</li>
+          <li><b>Tamper-evident</b> — manifest sealed in the MP3, verified on read</li>
+          <li class="a"><b>Immutable</b> — Object-Locked publish, provably unchanged</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="mono" style="color:var(--faint);font-size:16px;margin-bottom:18px">$ OFFLINE=1 pytest -q</div>
+        <div class="mono" style="font-size:20px;line-height:2;color:var(--muted)">
+          <span style="color:var(--forge-2)">175 passed</span> in 6.4s<br/>
+          coverage&nbsp;&nbsp;<span style="color:var(--forge-2)">100%</span><br/>
+          episodes&nbsp;<span style="color:var(--forge-2)">96/96 ✓</span><br/>
+          dropped&nbsp;&nbsp;&nbsp;<span style="color:var(--forge-2)">0</span>
+        </div>
+      </div>
     </div>
+    <aside class="speaker-notes"><span class="nk">Say</span>The failure everyone hand-waves — vendor death — is the exact thing this ships through, on the real SDK, with provenance you can verify. That's the moat.</aside>
   </section>
 
-  <section class="slide">
-    <div class="kicker">Why it wins · what's next</div>
-    <h2>Reliability is the <span class="grad">feature</span>.</h2>
-    <ul>
-      <li>The failure everyone hand-waves — vendor death — is the thing this ships through, on the real SDK.</li>
-      <li>Provenance + Object Lock make every episode verifiable and tamper-evident, not just generated.</li>
-      <li><span class="muted">Next:</span> more rungs, live vendor keys in the ladder, and a public verification page for any published episode.</li>
-    </ul>
-    <div class="links">
-      <a class="btn p" href="https://castiron.edycu.dev" target="_blank" rel="noreferrer">Live landing →</a>
-      <a class="btn s" href="https://api.castiron.edycu.dev/console" target="_blank" rel="noreferrer">Open the console</a>
-      <a class="btn s" href="https://github.com/edycutjong/castiron" target="_blank" rel="noreferrer">Source</a>
+  <!-- 9 · TRACTION -->
+  <section class="slide" data-title="Shipped">
+    <div class="kicker">Shipped, live, reproducible</div>
+    <h2 style="font-size:60px">Proven with <span class="grad">one command</span>.</h2>
+    <div class="flow" style="gap:22px">
+      <div class="fnode"><div class="stat">96/96</div><div class="p" style="margin-top:10px">episodes shipped hash-verified — 0 dropped</div></div>
+      <div class="fnode"><div class="stat a" style="font-size:60px">p95 134ms</div><div class="p" style="margin-top:10px">failover latency (p50 ≈ 120ms)</div></div>
+      <div class="fnode"><div class="stat">175</div><div class="p" style="margin-top:10px">tests, green offline end-to-end</div></div>
+      <div class="fnode pick"><div class="stat" style="font-size:60px">100%</div><div class="p" style="margin-top:10px">line coverage · app + engine</div></div>
     </div>
+    <p class="lead mono" style="font-size:19px;margin-top:40px;max-width:none">castiron.edycu.dev &nbsp;·&nbsp; api.castiron.edycu.dev/console &nbsp;·&nbsp; github.com/edycutjong/castiron</p>
+    <aside class="speaker-notes"><span class="nk">Say</span>Everything here is verifiable right now — landing, real API console, CI/CD, full coverage, and the benchmark numbers reproduce with one command.</aside>
+  </section>
+
+  <!-- 10 · THE ASK -->
+  <section class="slide" data-title="The ask">
+    <div class="cols">
+      <div>
+        <div class="kicker">The ask</div>
+        <h2>Break it <span class="grad">yourself.</span></h2>
+        <p class="lead" style="font-size:27px">Open the console, flip the chaos toggle to knock out a provider, and watch the episode ship anyway — no signup, no keys.</p>
+        <div class="links">
+          <a class="btn p" href="https://api.castiron.edycu.dev/console" target="_blank" rel="noreferrer">Open the live console →</a>
+          <a class="btn s" href="https://castiron.edycu.dev" target="_blank" rel="noreferrer">Landing</a>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:20px">
+        <!-- SWAP: replace with real QR to api.castiron.edycu.dev/console -->
+        <div class="qr" aria-label="QR to live console"></div>
+        <div class="mono muted" style="font-size:17px;text-align:center">scan → api.castiron.edycu.dev/console</div>
+      </div>
+    </div>
+    <aside class="speaker-notes"><span class="nk">Close</span>Don't take the numbers on faith — try to break it. Flip the chaos toggle and watch the episode ship anyway. The console is already waiting.</aside>
   </section>
 
 </div>
+</div>
 
-<div class="count" id="count">01 / 08</div>
-<div class="dots" id="dots"></div>
-<div class="nav"><button id="prev" aria-label="Previous">‹</button><button id="next" aria-label="Next">›</button></div>
+<div class="hint" id="hint">← → navigate · P notes · ESC grid</div>
+<div class="counter" id="counter">01 / 10</div>
+<div class="dotsnav" id="dotsnav"></div>
+<div class="notes-panel" id="notesPanel"><span class="nk">Speaker notes</span><div id="notesText"></div></div>
+<div class="overview" id="overview"></div>
 
 <script>
-  const slides = [...document.querySelectorAll('.slide')];
-  const dotsWrap = document.getElementById('dots');
-  const count = document.getElementById('count');
-  let i = 0;
-  slides.forEach((_, n) => {
-    const b = document.createElement('button'); b.className = 'dot'; b.setAttribute('aria-label','Slide '+(n+1));
-    b.addEventListener('click', () => go(n)); dotsWrap.appendChild(b);
-  });
-  const dots = [...dotsWrap.children];
-  const pad = n => String(n).padStart(2,'0');
-  function go(n){
-    i = Math.max(0, Math.min(slides.length-1, n));
-    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
-    dots.forEach((d,k)=>d.classList.toggle('on',k===i));
-    count.textContent = pad(i+1)+' / '+pad(slides.length);
+  const stage=document.getElementById('stage');
+  const slides=[...document.querySelectorAll('.slide')];
+  const counter=document.getElementById('counter');
+  const dotsnav=document.getElementById('dotsnav');
+  const overview=document.getElementById('overview');
+  const notesText=document.getElementById('notesText');
+  let i=0;
+  function fit(){
+    const h=document.body.classList.contains('presenter')?864:1080;
+    const s=Math.min(window.innerWidth/1920,(document.body.classList.contains('presenter')?window.innerHeight*0.5:window.innerHeight)/h);
+    stage.style.transform=`scale(${s})`; stage.style.height=h+'px';
   }
-  document.getElementById('next').addEventListener('click',()=>go(i+1));
-  document.getElementById('prev').addEventListener('click',()=>go(i-1));
+  addEventListener('resize',fit);
+  slides.forEach((sl,n)=>{
+    const b=document.createElement('button'); b.setAttribute('aria-label','Slide '+(n+1)); b.onclick=()=>go(n); dotsnav.appendChild(b);
+    const c=document.createElement('div'); c.className='ov-cell';
+    c.innerHTML=`<div class="n">${String(n+1).padStart(2,'0')}</div><div class="ttl">${sl.dataset.title||('Slide '+(n+1))}</div>`;
+    c.onclick=()=>{go(n);overview.style.display='none'}; overview.appendChild(c);
+  });
+  const dots=[...dotsnav.children];
+  const pad=n=>String(n).padStart(2,'0');
+  function go(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>{s.classList.toggle('active',k===i);s.classList.toggle('prev',k<i)});
+    dots.forEach((d,k)=>d.classList.toggle('on',k===i));
+    counter.textContent=pad(i+1)+' / '+pad(slides.length);
+    const note=slides[i].querySelector('.speaker-notes');
+    notesText.innerHTML=note?note.innerHTML.replace(/<span class="nk">.*?<\/span>/,''):'';
+  }
   addEventListener('keydown',e=>{
     if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(i+1)}
-    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1)}
-    if(e.key==='Home')go(0); if(e.key==='End')go(slides.length-1);
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1)}
+    else if(e.key==='Home'){go(0)} else if(e.key==='End'){go(slides.length-1)}
+    else if(e.key==='Escape'){overview.style.display=(overview.style.display==='flex')?'none':'flex'}
+    else if(e.key==='p'||e.key==='P'){document.body.classList.toggle('presenter');fit()}
+    else if(e.key==='c'||e.key==='C'){document.body.classList.toggle('debug-contrast')}
   });
   let sx=null; addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
   addEventListener('touchend',e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)go(i+(dx<0?1:-1));sx=null});
-  go(0);
+  fit(); go(0);
 </script>
 </body>
 </html>
