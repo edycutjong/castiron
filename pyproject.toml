@@ -1,6 +1,6 @@
 [project]
 name = "castiron"
-version = "1.4.0"
+version = "1.5.0"
 description = "CastIron — script to published episode, even when your TTS provider dies. Self-healing audio-episode factory on Genblaze + Backblaze B2."
 readme = "README.md"
 requires-python = ">=3.11"
