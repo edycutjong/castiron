@@ -67,11 +67,11 @@ pipeline you'd put on a schedule.
 
 ```mermaid
 flowchart TD
-    A([📥 POST /runs · script, chaos?]) -->|genblaze Pipeline.astream max_concurrency=3| FAN{{3-stage parallel fan-out}}
+    A(["📥 POST /runs · script, chaos?"]) -->|"genblaze Pipeline.astream max_concurrency=3"| FAN{{"3-stage parallel fan-out"}}
 
-    FAN --> N[🎙️ narration<br/>LadderTTSProvider<br/>elevenlabs → lmnt → hume]
-    FAN --> M[🎵 music<br/>Stability-shaped]
-    FAN --> C[🖼️ cover<br/>FLUX/DALL·E-shaped]
+    FAN --> N["🎙️ narration<br/>LadderTTSProvider<br/>elevenlabs → lmnt → hume"]
+    FAN --> M["🎵 music<br/>Stability-shaped"]
+    FAN --> C["🖼️ cover<br/>FLUX/DALL·E-shaped"]
 
     CHAOS[["⚡ chaos: TTS outage<br/>kills rung 0 → ladder steps down"]] -.-> N
 
@@ -79,10 +79,10 @@ flowchart TD
     M --> S
     C --> S
 
-    S[💾 ObjectStorageSink · B2 · HIERARCHICAL<br/>runs/{date}/{run}/… + manifest.json]
-    S -->|astream events → SQLite log → SSE rail /console| V[🔎 read_manifest verify=True<br/>SmartEmbedder → episode.mp3<br/>in-file ID3 manifest]
-    V --> W[📨 B2 Event Notification HMAC<br/>idempotent stage machine → publish]
-    W --> P([🔒 ci-published/{run}/episode.mp3<br/>Object Lock · GOVERNANCE 30d · immutable])
+    S["💾 ObjectStorageSink · B2 · HIERARCHICAL<br/>runs/{date}/{run}/… + manifest.json"]
+    S -->|"astream events → SQLite log → SSE rail /console"| V["🔎 read_manifest verify=True<br/>SmartEmbedder → episode.mp3<br/>in-file ID3 manifest"]
+    V --> W["📨 B2 Event Notification HMAC<br/>idempotent stage machine → publish"]
+    W --> P(["🔒 ci-published/{run}/episode.mp3<br/>Object Lock · GOVERNANCE 30d · immutable"])
 
     style A fill:#06b6d4,stroke:#0891b2,color:#fff
     style CHAOS fill:#ef4444,stroke:#b91c1c,color:#fff
