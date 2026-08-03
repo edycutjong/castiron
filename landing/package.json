@@ -2,7 +2,7 @@
   "name": "castiron-landing",
   "version": "1.0.0",
   "private": true,
-  "description": "CastIron landing page — script to published episode, even when your TTS provider dies",
+  "description": "CastIron landing page \u2014 script to published episode, even when your TTS provider dies",
   "browserslist": [
     "chrome >= 111",
     "edge >= 111",
@@ -17,18 +17,22 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "lucide-react": "^0.454.0",
-    "next": "^14.2.5",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "next": "^15.5.22",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "tailwind-merge": "^2.5.4"
   },
   "devDependencies": {
     "@types/node": "^20.16.11",
-    "@types/react": "^18.3.11",
-    "@types/react-dom": "^18.3.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.47",
+    "postcss": "^8.5.25",
     "tailwindcss": "^3.4.14",
     "typescript": "^5.6.3"
+  },
+  "overrides": {
+    "sharp": "^0.35.3",
+    "postcss": "$postcss"
   }
 }
