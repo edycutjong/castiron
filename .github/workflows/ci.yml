@@ -200,7 +200,20 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "Deploying ${{ needs.release.outputs.tag || 'current main' }} to Railway…"
+          set +e
           railway up --ci --service castiron --environment production
+          RC=$?
+          set -e
+          if [ "$RC" -ne 0 ]; then
+            echo "::warning::railway up exited $RC — usually the 'Failed to stream build logs' flake, not a deploy failure. Verifying liveness via /healthz."
+            OK=0
+            for i in $(seq 1 24); do
+              CODE=$(curl -sS -m 10 -o /dev/null -w '%{http_code}' https://api.castiron.edycu.dev/healthz || true)
+              if [ "$CODE" = "200" ]; then OK=1; echo "✅ /healthz 200 on attempt $i"; break; fi
+              echo "  waiting for deploy to go live… attempt $i (got '$CODE')"; sleep 15
+            done
+            if [ "$OK" -ne 1 ]; then echo "::error::app not healthy after deploy"; exit 1; fi
+          fi
       - name: Deployment summary
         run: |
           echo "🚀 Deployed to https://api.castiron.edycu.dev"
