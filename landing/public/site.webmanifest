@@ -1,0 +1,13 @@
+{
+  "name": "CastIron — TTS Failover Podcast Pipeline",
+  "short_name": "CastIron",
+  "description": "Self-healing audio-episode factory on Genblaze + Backblaze B2: cross-provider TTS failover, tamper-evident manifests, Object-Locked immutable publishing.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070B0E",
+  "theme_color": "#070B0E",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -113,7 +113,7 @@ export function Footer() {
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-iron-text">
             © 2026 CastIron · MIT licensed · forged for the Backblaze Generative Media Hackathon
           </p>
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-iron-text/70">
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-iron-text/80">
             Static page · no cookies · no trackers · 0 dropped episodes
           </p>
         </div>

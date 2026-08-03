@@ -6,7 +6,8 @@
 
   <br/>
 
-  [![Live Demo](https://img.shields.io/badge/🚀_Live-Demo-06b6d4?style=for-the-badge)](https://castiron.edycu.dev)
+  [![Landing](https://img.shields.io/badge/🚀_Landing-Live-06b6d4?style=for-the-badge)](https://castiron.edycu.dev)
+  [![API](https://img.shields.io/badge/🔌_API-Live-10b981?style=for-the-badge)](https://api.castiron.edycu.dev/docs)
   [![Pitch Deck](https://img.shields.io/badge/📊_Pitch-Deck-f59e0b?style=for-the-badge)](https://castiron.edycu.dev/pitch.html)
   [![Pitch Video](https://img.shields.io/badge/🎬_Pitch-Video-ef4444?style=for-the-badge)](https://youtu.be/your-video)
   [![Built for Hackathon](https://img.shields.io/badge/Devpost-Backblaze_Generative_Media-8b5cf6?style=for-the-badge)](https://backblaze-generative-media.devpost.com)

@@ -36,7 +36,7 @@ export function Header() {
     >
       <div className="mx-auto flex h-[4.25rem] max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
         {/* Element 2: logo, top-left — the animated brand mark itself */}
-        <a href="#top" className="group flex items-center gap-3" aria-label="CastIron — back to top">
+        <a href="#top" className="group flex items-center gap-3" title="Back to top">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="brand/icon-animated.svg"

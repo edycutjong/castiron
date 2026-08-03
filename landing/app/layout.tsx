@@ -28,6 +28,10 @@ export const metadata: Metadata = {
   title: "CastIron — TTS Failover Podcast Pipeline | Script to Published Episode, Even When Your Provider Dies",
   description:
     "CastIron is a self-healing audio-episode factory on Genblaze + Backblaze B2: a cross-provider TTS failover ladder (ElevenLabs → LMNT → Hume), tamper-evident in-file manifests, and Object-Locked immutable publishing. 96/96 episodes shipped hash-verified, 0 dropped.",
+  applicationName: "CastIron",
+  authors: [{ name: "Edy Cu" }],
+  manifest: "/site.webmanifest",
+  alternates: { canonical: "/" },
   keywords: [
     "TTS failover",
     "podcast pipeline",
