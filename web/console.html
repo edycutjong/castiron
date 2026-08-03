@@ -4,29 +4,39 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>CastIron — Producer Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg:#0b0c0e; --panel:#141619; --line:#23272d; --ink:#e8eaed; --dim:#8b929c;
-    --iron:#d98a3d; --ok:#3ecf8e; --run:#e0b23d; --fail:#ef5f5f; --pending:#3a3f47;
+    --bg:#070B0E; --panel:#12181c; --line:#23272d; --line-2:#31373f; --ink:#e8eaed; --dim:#8b929c;
+    --forge:#10B981; --forge-strong:#34D399; --forge-deep:#059669;
+    --iron:#e0b23d; --ok:#34D399; --run:#e0b23d; --fail:#ef5f5f; --pending:#3a3f47;
   }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--ink);
-    font:14px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  body { margin:0; color:var(--ink); -webkit-font-smoothing:antialiased;
+    background:radial-gradient(1100px 560px at 78% -12%,rgba(16,185,129,.12),transparent),var(--bg);
+    font:14px/1.55 "Space Grotesk",system-ui,sans-serif; }
   header { padding:22px 28px; border-bottom:1px solid var(--line);
-    display:flex; align-items:baseline; gap:14px; }
-  h1 { font-size:18px; margin:0; letter-spacing:.02em; }
-  h1 b { color:var(--iron); }
+    display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  h1 { font-size:19px; margin:0; letter-spacing:.01em; font-family:"Unbounded","Space Grotesk",sans-serif; }
+  h1 b { color:var(--forge-strong); font-weight:800; }
   .tag { color:var(--dim); font-size:12px; }
+  .mode { margin-left:auto; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--forge-strong);
+    border:1px solid var(--line-2); border-radius:20px; padding:3px 10px; }
   main { max-width:920px; margin:0 auto; padding:26px 28px; }
-  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px;
-    padding:18px 20px; margin-bottom:20px; }
+  .card { background:linear-gradient(180deg,rgba(255,255,255,.035),transparent),var(--panel);
+    border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-bottom:20px; }
   label { display:block; color:var(--dim); font-size:12px; margin:10px 0 4px; }
   input,select,button { font:inherit; }
-  input,select { width:100%; background:#0e1013; color:var(--ink);
-    border:1px solid var(--line); border-radius:7px; padding:9px 11px; }
+  input,select { width:100%; background:#0d1215; color:var(--ink);
+    border:1px solid var(--line); border-radius:9px; padding:10px 12px; outline:none; transition:border-color .18s; }
+  input:focus,select:focus { border-color:rgba(16,185,129,.6); }
   .row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  button { margin-top:16px; background:var(--iron); color:#111; border:0;
-    border-radius:7px; padding:11px 18px; font-weight:600; cursor:pointer; }
+  button { margin-top:16px; color:#fff; border:0; border-radius:999px; padding:12px 26px; font-weight:700; cursor:pointer;
+    background:linear-gradient(135deg,var(--forge-deep),var(--forge) 55%,var(--forge-strong));
+    box-shadow:0 8px 26px rgba(16,185,129,.30); transition:transform .16s,box-shadow .16s; }
+  button:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 10px 34px rgba(16,185,129,.4); }
   button:disabled { opacity:.5; cursor:not-allowed; }
   .rail { display:flex; flex-direction:column; gap:12px; }
   .stage { display:flex; align-items:center; gap:14px; padding:14px 16px;
@@ -41,15 +51,15 @@
   .stage.succeeded { border-color:#255c44; }
   .stage.failed { border-color:#6b2b2b; }
   @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(224,178,61,.5)} 70%{box-shadow:0 0 0 8px rgba(224,178,61,0)} 100%{box-shadow:0 0 0 0 rgba(224,178,61,0)} }
-  .stage .name { width:100px; font-weight:600; text-transform:capitalize; }
-  .stage .meta { color:var(--dim); font-size:12px; flex:1; }
+  .stage .name { width:100px; font-weight:600; text-transform:capitalize; font-family:"Space Grotesk",sans-serif; }
+  .stage .meta { color:var(--dim); font-size:12px; flex:1; font-family:"JetBrains Mono",ui-monospace,monospace; }
   .stage .meta b { color:var(--ink); font-weight:600; }
-  .badge { font-size:11px; padding:2px 8px; border-radius:20px; border:1px solid var(--line); color:var(--dim); }
+  .badge { font-size:11px; padding:2px 8px; border-radius:20px; border:1px solid var(--line); color:var(--dim); font-family:"JetBrains Mono",ui-monospace,monospace; }
   .badge.fell { color:var(--iron); border-color:var(--iron); }
-  #summary { color:var(--dim); font-size:12.5px; min-height:20px; margin-top:6px; }
+  #summary { color:var(--dim); font-size:12.5px; min-height:20px; margin-top:6px; font-family:"JetBrains Mono",ui-monospace,monospace; }
   #summary .hash { color:var(--ok); }
   #log { margin-top:16px; max-height:210px; overflow:auto; border-top:1px solid var(--line);
-    padding-top:12px; color:var(--dim); font-size:12px; }
+    padding-top:12px; color:var(--dim); font-size:12px; font-family:"JetBrains Mono",ui-monospace,monospace; }
   #log div { white-space:pre; }
   #log .fb { color:var(--iron); }
   #log .er { color:var(--fail); }
@@ -59,6 +69,7 @@
 <header>
   <h1><b>CastIron</b> Producer Console</h1>
   <span class="tag">script &rarr; published episode, even when your TTS provider dies</span>
+  <span class="mode" id="mode">—</span>
 </header>
 <main>
   <div class="card">
@@ -113,6 +124,8 @@
 const $ = s => document.querySelector(s);
 const stageEl = name => document.querySelector(`.stage[data-stage="${name}"]`);
 let es = null;
+
+fetch('/healthz').then(r=>r.json()).then(d=>{ $('#mode').textContent = d.mode + ' · genblaze ' + d.genblaze_version; }).catch(()=>{});
 
 function resetRail() {
   document.querySelectorAll('.stage').forEach(s => {
