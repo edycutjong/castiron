@@ -7,8 +7,8 @@
   <br/>
 
   [![Landing](https://img.shields.io/badge/🚀_Landing-Live-06b6d4?style=for-the-badge)](https://castiron.edycu.dev)
-  [![API](https://img.shields.io/badge/🔌_API-Live-10b981?style=for-the-badge)](https://api.castiron.edycu.dev/docs)
   [![Pitch Deck](https://img.shields.io/badge/📊_Pitch-Deck-f59e0b?style=for-the-badge)](https://castiron.edycu.dev/pitch.html)
+  [![API](https://img.shields.io/badge/🔌_API-Live-10b981?style=for-the-badge)](https://api.castiron.edycu.dev/docs)
   [![Pitch Video](https://img.shields.io/badge/🎬_Pitch-Video-ef4444?style=for-the-badge)](https://youtu.be/your-video)
   [![Built for Hackathon](https://img.shields.io/badge/Devpost-Backblaze_Generative_Media-8b5cf6?style=for-the-badge)](https://backblaze-generative-media.devpost.com)
 
@@ -18,9 +18,6 @@
   ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
   ![Genblaze](https://img.shields.io/badge/Genblaze_0.4.1-6366F1?style=flat)
   ![Backblaze B2](https://img.shields.io/badge/Backblaze_B2-E21E29?style=flat&logo=backblaze&logoColor=white)
-
-  <br/>
-
   [![Tests](https://img.shields.io/badge/tests-175_passing-2ea44f?style=flat&logo=pytest&logoColor=white)](tests)
   [![Coverage](https://img.shields.io/badge/coverage-100%25-2ea44f?style=flat)](#-production-readiness)
   [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
@@ -225,4 +222,4 @@ docs/        evidence packs · friction log · dossier issues · assets
 
 ## 📄 License
 
-[MIT](LICENSE).
+[MIT](LICENSE) © 2026 Edy Cu
