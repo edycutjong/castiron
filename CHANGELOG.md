@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.7.0 (2026-08-04)
 
 ### Chores
 
@@ -13,6 +13,14 @@
 - Tolerate Railway 'Failed to stream build logs' flake — verify deploy via /healthz instead of
   failing on log-stream error
   ([`109cd5d`](https://github.com/edycutjong/castiron/commit/109cd5d748f52f9533c511906eb3f5f976fd20f9))
+
+- **release**: Set semantic-release changelog mode=init + backfill CHANGELOG
+  ([`9a5e59e`](https://github.com/edycutjong/castiron/commit/9a5e59ef616e8adf320696d71ccedc4994d3eb2d))
+
+### Features
+
+- **landing**: Author-credit footer + footer socials, sponsor logo dimensions, icon refresh
+  ([`26c1deb`](https://github.com/edycutjong/castiron/commit/26c1debc18a33bb095ad4802ca49426c4ae5f99f))
 
 
 ## v1.6.0 (2026-08-03)
