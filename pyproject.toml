@@ -84,3 +84,10 @@ allow_zero_version = true                 # stay in 0.x until a deliberate 1.0.0
 
 [tool.semantic_release.branches.main]
 match = "main"
+
+[tool.semantic_release.changelog]
+# PSR v10 defaults changelog.mode to "update", which only writes when the
+# "<!-- version list -->" insertion marker is present — ours wasn't, so the
+# changelog silently froze while versions/tags kept advancing. "init"
+# regenerates the whole changelog from history on every release (self-healing).
+mode = "init"
