@@ -25,9 +25,9 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://castiron.edycu.dev"),
-  title: "CastIron — TTS Failover Podcast Pipeline | Script to Published Episode, Even When Your Provider Dies",
+  title: "CastIron — TTS Failover Podcast Pipeline on B2",
   description:
-    "CastIron is a self-healing audio-episode factory on Genblaze + Backblaze B2: a cross-provider TTS failover ladder (ElevenLabs → LMNT → Hume), tamper-evident in-file manifests, and Object-Locked immutable publishing. 96/96 episodes shipped hash-verified, 0 dropped.",
+    "Self-healing podcast pipeline on Genblaze + Backblaze B2 — a cross-provider TTS failover ladder that keeps shipping when a vendor dies. 96/96, 0 dropped.",
   applicationName: "CastIron",
   authors: [{ name: "Edy Cu" }],
   manifest: "/site.webmanifest",
@@ -48,14 +48,14 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://castiron.edycu.dev",
     siteName: "CastIron",
-    title: "CastIron — Your TTS provider just died. The episode still ships.",
+    title: "Your TTS provider just died. The episode still ships.",
     description:
-      "Cross-provider failover ladder, provenance sealed inside the MP3, immutable Object-Locked publish on Backblaze B2. 96/96 episodes shipped, 0 dropped — reproducible with one command.",
+      "Cross-provider TTS failover + provenance sealed in the MP3, Object-Locked on Backblaze B2. 96/96 shipped, 0 dropped.",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CastIron — zero dropped episodes" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CastIron — Your TTS provider just died. The episode still ships.",
+    title: "Your TTS provider just died. The episode still ships.",
     description:
       "Self-healing audio-episode factory on Genblaze + Backblaze B2. 96/96 shipped hash-verified, 0 dropped.",
     images: ["/og-image.png"],
