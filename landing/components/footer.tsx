@@ -1,4 +1,4 @@
-import { ArrowUpRight, Github, Radio, Scale } from "lucide-react";
+import { ArrowUpRight, Github, Globe, Mail, Radio, Scale, Twitter } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { LINKS } from "@/lib/utils";
 
@@ -79,7 +79,38 @@ export function Footer() {
               >
                 <Scale className="h-4 w-4" />
               </a>
+              <a
+                href="https://x.com/edycutjong"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="X (@edycutjong)"
+                className="flex h-9 w-9 items-center justify-center rounded-md border border-iron-strong text-iron-text transition-all duration-200 hover:-translate-y-0.5 hover:border-forge-500/60 hover:text-forge-300"
+              >
+                <Twitter className="h-4 w-4" />
+              </a>
+              <a
+                href="https://edycu.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Website — edycu.dev"
+                className="flex h-9 w-9 items-center justify-center rounded-md border border-iron-strong text-iron-text transition-all duration-200 hover:-translate-y-0.5 hover:border-forge-500/60 hover:text-forge-300"
+              >
+                <Globe className="h-4 w-4" />
+              </a>
+              <a
+                href="mailto:edy.cu@live.com"
+                aria-label="Email"
+                className="flex h-9 w-9 items-center justify-center rounded-md border border-iron-strong text-iron-text transition-all duration-200 hover:-translate-y-0.5 hover:border-forge-500/60 hover:text-forge-300"
+              >
+                <Mail className="h-4 w-4" />
+              </a>
             </div>
+            <p className="mt-5 font-mono text-[11px] text-iron-text">
+              Built by{" "}
+              <a href="https://edycu.dev" target="_blank" rel="noopener noreferrer" className="text-fg underline-offset-2 hover:text-forge-300 hover:underline">
+                Edy Cu Tjong
+              </a>
+            </p>
           </div>
 
           {/* Link columns */}
@@ -114,11 +145,11 @@ export function Footer() {
           <div className="flex flex-wrap items-center justify-center gap-4">
             <a href={LINKS.backblaze} target="_blank" rel="noopener noreferrer" aria-label="Backblaze" className="rounded-lg bg-white px-5 py-3 transition-transform duration-200 hover:-translate-y-0.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="sponsors/backblaze.png" alt="Backblaze" className="h-7 w-auto" />
+              <img src="sponsors/backblaze.png" alt="Backblaze" width={351} height={110} className="h-7 w-auto" />
             </a>
             <a href="https://www.gmicloud.ai" target="_blank" rel="noopener noreferrer" aria-label="GMI Cloud" className="rounded-lg bg-white px-5 py-3 transition-transform duration-200 hover:-translate-y-0.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="sponsors/gmi.png" alt="GMI Cloud" className="h-7 w-auto" />
+              <img src="sponsors/gmi.png" alt="GMI Cloud" width={365} height={110} className="h-7 w-auto" />
             </a>
           </div>
         </div>

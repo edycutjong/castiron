@@ -234,3 +234,9 @@ Built for the **[Backblaze Generative Media Hackathon](https://backblaze-generat
 ## 📄 License
 
 [MIT](LICENSE) © 2026 Edy Cu
+
+---
+
+<div align="center">
+  <sub>Built by <a href="https://edycu.dev"><b>Edy Cu Tjong</b></a> · <a href="https://github.com/edycutjong">GitHub</a> · <a href="https://x.com/edycutjong">X</a> · <a href="mailto:edy.cu@live.com">Email</a></sub>
+</div>
