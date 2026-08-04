@@ -1,5 +1,6 @@
 import { ArrowUpRight, Github, Globe, Mail, Radio, Scale, Twitter } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { ReleaseBadge } from "@/components/release-badge";
 import { LINKS } from "@/lib/utils";
 
 const COLUMNS: { title: string; links: { label: string; href: string; external?: boolean }[] }[] = [
@@ -160,9 +161,12 @@ export function Footer() {
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-iron-text">
             © 2026 CastIron · MIT licensed · forged for the Backblaze Generative Media Hackathon
           </p>
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-iron-text/80">
-            Static page · no cookies · no trackers · 0 dropped episodes
-          </p>
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <ReleaseBadge />
+            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-iron-text/80">
+              Static page · no cookies · no trackers · 0 dropped episodes
+            </p>
+          </div>
         </div>
       </div>
     </footer>
