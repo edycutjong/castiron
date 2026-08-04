@@ -1,6 +1,20 @@
 # CHANGELOG
 
 
+## v1.8.0 (2026-08-04)
+
+### Chores
+
+- **deps**: Bump cryptography from 49.0.0 to 50.0.0
+  ([#9](https://github.com/edycutjong/castiron/pull/9),
+  [`91312d0`](https://github.com/edycutjong/castiron/commit/91312d03c006f2ca644c07410c45d3a71f917acc))
+
+### Features
+
+- **landing**: Live release-version badge in footer
+  ([`c6ab502`](https://github.com/edycutjong/castiron/commit/c6ab502a1c23263dd7593109565c51ad53b5479d))
+
+
 ## v1.7.0 (2026-08-04)
 
 ### Chores
